@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
+import toast from "react-hot-toast";
 import { adminLogin } from "@/lib/actions/admin.auth.actions";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -10,6 +11,10 @@ import { Label } from "@/components/ui/label";
 
 export function AdminLoginForm({ className, ...props }: React.ComponentProps<"div">) {
   const [state, action, pending] = useActionState(adminLogin, undefined);
+
+  if (state?.message) {
+    toast.error(state.message);
+  }
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
