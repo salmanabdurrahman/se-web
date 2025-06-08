@@ -25,7 +25,7 @@ export function AdminNavMain({ items }: { items: NavigationItem[] }) {
                 <SidebarMenuButton
                   tooltip={item.title}
                   className="cursor-pointer data-[slot=sidebar-menu-button]:!p-1.5"
-                  isActive={isActive(item.url)}
+                  isActive={item.url === "/admin" ? pathname === item.url : isActive(item.url)}
                 >
                   {item.icon && <item.icon />}
                   <span>{item.title}</span>
