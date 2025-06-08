@@ -19,7 +19,7 @@ export function AdminNavUser({
   user: {
     name: string;
     email: string;
-    avatar: string;
+    avatar?: string;
   };
 }) {
   const { isMobile } = useSidebar();
@@ -68,20 +68,19 @@ export function AdminNavUser({
                 <IconUserCircle />
                 Account
               </DropdownMenuItem>
-              <DropdownMenuItem>
+              {/* <DropdownMenuItem>
                 <IconCreditCard />
                 Billing
               </DropdownMenuItem>
               <DropdownMenuItem>
                 <IconNotification />
                 Notifications
+              </DropdownMenuItem> */}
+              <DropdownMenuItem className="text-red-400">
+                <IconLogout className="text-red-400" />
+                Log out
               </DropdownMenuItem>
             </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <IconLogout />
-              Log out
-            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>

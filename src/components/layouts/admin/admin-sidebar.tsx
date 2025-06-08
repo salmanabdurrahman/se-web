@@ -1,17 +1,8 @@
 "use client";
 
 import * as React from "react";
-import {
-  IconCamera,
-  IconChartBar,
-  IconDashboard,
-  IconFileAi,
-  IconFileDescription,
-  IconFolder,
-  IconInnerShadowTop,
-  IconListDetails,
-  IconUsers,
-} from "@tabler/icons-react";
+import Link from "next/link";
+import { IconInnerShadowTop } from "@tabler/icons-react";
 import {
   Sidebar,
   SidebarContent,
@@ -23,88 +14,12 @@ import {
 } from "@/components/ui/sidebar";
 import { AdminNavMain } from "./admin-nav-main";
 import { AdminNavUser } from "./admin-nav-user";
+import { adminSidebarItems } from "@/constants/navigation";
 
-const data = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
-  navMain: [
-    {
-      title: "Dashboard",
-      url: "#",
-      icon: IconDashboard,
-    },
-    {
-      title: "Lifecycle",
-      url: "#",
-      icon: IconListDetails,
-    },
-    {
-      title: "Analytics",
-      url: "#",
-      icon: IconChartBar,
-    },
-    {
-      title: "Projects",
-      url: "#",
-      icon: IconFolder,
-    },
-    {
-      title: "Team",
-      url: "#",
-      icon: IconUsers,
-    },
-  ],
-  navClouds: [
-    {
-      title: "Capture",
-      icon: IconCamera,
-      isActive: true,
-      url: "#",
-      items: [
-        {
-          title: "Active Proposals",
-          url: "#",
-        },
-        {
-          title: "Archived",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Proposal",
-      icon: IconFileDescription,
-      url: "#",
-      items: [
-        {
-          title: "Active Proposals",
-          url: "#",
-        },
-        {
-          title: "Archived",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Prompts",
-      icon: IconFileAi,
-      url: "#",
-      items: [
-        {
-          title: "Active Proposals",
-          url: "#",
-        },
-        {
-          title: "Archived",
-          url: "#",
-        },
-      ],
-    },
-  ],
+const user = {
+  name: "shadcn",
+  email: "m@example.com",
+  avatar: "/avatars/shadcn.jpg",
 };
 
 export function AdminSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
@@ -114,19 +29,19 @@ export function AdminSidebar({ ...props }: React.ComponentProps<typeof Sidebar>)
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton asChild className="data-[slot=sidebar-menu-button]:!p-1.5">
-              <a href="#">
+              <Link href="/admin">
                 <IconInnerShadowTop className="!size-5" />
-                <span className="text-base font-semibold">Acme Inc.</span>
-              </a>
+                <span className="text-base font-semibold">Simple E-Commerce</span>
+              </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <AdminNavMain items={data.navMain} />
+        <AdminNavMain items={adminSidebarItems} />
       </SidebarContent>
       <SidebarFooter>
-        <AdminNavUser user={data.user} />
+        <AdminNavUser user={user} />
       </SidebarFooter>
     </Sidebar>
   );
