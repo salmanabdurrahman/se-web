@@ -1,9 +1,9 @@
-import prisma from "./prisma";
-import { PrismaAdapter } from "@lucia-auth/adapter-prisma";
-import { Lucia } from "lucia";
-import { UserRole } from "@prisma/client";
 import { cache } from "react";
 import { cookies } from "next/headers";
+import { Lucia, Session, User } from "lucia";
+import { PrismaAdapter } from "@lucia-auth/adapter-prisma";
+import { UserRole } from "@prisma/client";
+import prisma from "./prisma";
 
 const adapter = new PrismaAdapter(prisma.session, prisma.user);
 
@@ -39,27 +39,33 @@ interface DatabaseUserAttributes {
   role: UserRole;
 }
 
-export const getUser = cache(async () => {
-  const cookieStore = await cookies();
-  const sessionId = cookieStore.get(lucia.sessionCookieName)?.value ?? null;
+export const validateRequest = cache(
+  async (): Promise<{ user: User; session: Session } | { user: null; session: null }> => {
+    const cookieStore = await cookies();
+    const sessionId = cookieStore.get(lucia.sessionCookieName)?.value ?? null;
 
-  if (!sessionId) return null;
-
-  const { user, session } = await lucia.validateSession(sessionId);
-
-  try {
-    if (session && session.fresh) {
-      const sessionCookie = lucia.createSessionCookie(session.id);
-      cookieStore.set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
+    if (!sessionId) {
+      return {
+        user: null,
+        session: null,
+      };
     }
 
-    if (!session) {
-      const sessionCookie = lucia.createBlankSessionCookie();
-      cookieStore.set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
-    }
-  } catch {
-    // Next.js throws error when attempting to set cookies when rendering page
+    const result = await lucia.validateSession(sessionId);
+    // next.js throws when you attempt to set cookie when rendering page
+
+    try {
+      if (result.session && result.session.fresh) {
+        const sessionCookie = lucia.createSessionCookie(result.session.id);
+        cookieStore.set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
+      }
+
+      if (!result.session) {
+        const sessionCookie = lucia.createBlankSessionCookie();
+        cookieStore.set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
+      }
+    } catch {}
+
+    return result;
   }
-
-  return user;
-});
+);

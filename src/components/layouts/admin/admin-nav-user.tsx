@@ -1,6 +1,9 @@
 "use client";
 
+import { useActionState } from "react";
+import toast from "react-hot-toast";
 import { IconCreditCard, IconDotsVertical, IconLogout, IconNotification, IconUserCircle } from "@tabler/icons-react";
+import { adminLogout } from "@/lib/actions/admin.auth.actions";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -23,6 +26,11 @@ export function AdminNavUser({
   };
 }) {
   const { isMobile } = useSidebar();
+  const [state, action, pending] = useActionState(adminLogout, undefined);
+
+  if (state?.message) {
+    toast.error(state.message);
+  }
 
   return (
     <SidebarMenu>
@@ -76,10 +84,14 @@ export function AdminNavUser({
                 <IconNotification />
                 Notifications
               </DropdownMenuItem> */}
-              <DropdownMenuItem className="text-red-400">
-                <IconLogout className="text-red-400" />
-                Log out
-              </DropdownMenuItem>
+              <form method="POST" action={action} className="w-full">
+                <button className="w-full" type="submit" disabled={pending}>
+                  <DropdownMenuItem className="text-red-400">
+                    <IconLogout className="text-red-400" />
+                    {pending ? "Logging out..." : "Logout"}
+                  </DropdownMenuItem>
+                </button>
+              </form>
             </DropdownMenuGroup>
           </DropdownMenuContent>
         </DropdownMenu>

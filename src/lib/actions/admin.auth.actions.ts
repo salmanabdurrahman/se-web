@@ -5,9 +5,9 @@ import { redirect } from "next/navigation";
 import bcrypt from "bcrypt";
 import { adminLoginSchema, FormState } from "@/types/admin.auth.types";
 import prisma from "../prisma";
-import { lucia } from "../auth";
+import { lucia, validateRequest } from "../auth";
 
-export async function adminLogin(state: FormState, formData: FormData) {
+export async function adminLogin(_: FormState, formData: FormData) {
   const validatedFields = adminLoginSchema.safeParse({
     email: formData.get("email"),
     password: formData.get("password"),
@@ -35,7 +35,7 @@ export async function adminLogin(state: FormState, formData: FormData) {
     };
   }
 
-  const isPasswordValid = bcrypt.compareSync(password, existingUser.password);
+  const isPasswordValid = await bcrypt.compare(password, existingUser.password);
   if (!isPasswordValid) {
     return {
       message: "Invalid login credentials. Please try again.",
@@ -47,4 +47,19 @@ export async function adminLogin(state: FormState, formData: FormData) {
   (await cookies()).set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
 
   return redirect("/admin");
+}
+
+export async function adminLogout(_: FormState) {
+  const { session } = await validateRequest();
+  if (!session) {
+    return {
+      message: "Unauthorized action. Please log in again.",
+    };
+  }
+
+  await lucia.invalidateSession(session.id);
+  const sessionCookie = lucia.createBlankSessionCookie();
+  (await cookies()).set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
+
+  return redirect("/admin/login");
 }
