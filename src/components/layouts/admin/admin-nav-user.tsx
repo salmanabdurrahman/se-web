@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useEffect } from "react";
 import toast from "react-hot-toast";
 import { IconCreditCard, IconDotsVertical, IconLogout, IconNotification, IconUserCircle } from "@tabler/icons-react";
 import { adminLogout } from "@/lib/actions/admin.auth.actions";
@@ -28,9 +28,11 @@ export function AdminNavUser({
   const { isMobile } = useSidebar();
   const [state, action, pending] = useActionState(adminLogout, undefined);
 
-  if (state?.message) {
-    toast.error(state.message);
-  }
+  useEffect(() => {
+    if (state?.message) {
+      toast.error(state.message);
+    }
+  }, [state]);
 
   return (
     <SidebarMenu>
