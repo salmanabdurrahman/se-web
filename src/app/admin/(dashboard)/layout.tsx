@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import AdminLayoutShell from "@/components/layouts/admin/admin-layout-shell.tsx";
 
 export const metadata: Metadata = {
   title: "Admin Dashboard | SE",
@@ -6,5 +7,9 @@ export const metadata: Metadata = {
 };
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
-  return <main>{children}</main>;
+  return (
+    <main>
+      <AdminLayoutShell>{children}</AdminLayoutShell>
+    </main>
+  );
 }

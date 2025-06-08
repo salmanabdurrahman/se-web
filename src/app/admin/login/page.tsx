@@ -1,10 +1,4 @@
-import { Metadata } from "next";
 import { AdminLoginForm } from "@/components/features/auth/admin/admin-login-form";
-
-export const metadata: Metadata = {
-  title: "Admin Login | SE",
-  description: "Admin Login Page",
-};
 
 export default function AdminLoginPage() {
   return (
