@@ -24,10 +24,6 @@ export const columns: ColumnDef<AdminCategories>[] = [
     header: "Name",
   },
   {
-    accessorKey: "productCount",
-    header: "Product Count",
-  },
-  {
     accessorKey: "createdAt",
     header: () => "Created At",
     cell: ({ row }) => {

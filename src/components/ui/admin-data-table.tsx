@@ -8,9 +8,10 @@ import { Button } from "@/components/ui/button";
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  title?: string;
 }
 
-export function AdminDataTable<TData, TValue>({ columns, data }: DataTableProps<TData, TValue>) {
+export function AdminDataTable<TData, TValue>({ columns, data, title }: DataTableProps<TData, TValue>) {
   const table = useReactTable({
     data,
     columns,
@@ -22,7 +23,7 @@ export function AdminDataTable<TData, TValue>({ columns, data }: DataTableProps<
     <div className="space-y-4">
       <div className="text-right">
         <Button variant="outline" size="sm">
-          <PlusCircle /> Add New Category
+          <PlusCircle /> Add New {title}
         </Button>
       </div>
       <div className="rounded-md border">
