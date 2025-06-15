@@ -14,6 +14,7 @@ export default async function AdminCategoriesPage() {
 
   return (
     <section className="container mx-auto py-10">
+      <h1 className="text-2xl font-bold">All Categories</h1>
       <AdminDataTable title="Category" columns={columns} data={data} />
     </section>
   );

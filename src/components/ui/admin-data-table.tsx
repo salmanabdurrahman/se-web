@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from "@tanstack/react-table";
 import { PlusCircle } from "lucide-react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -18,12 +20,15 @@ export function AdminDataTable<TData, TValue>({ columns, data, title }: DataTabl
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
   });
+  const pathname = usePathname();
 
   return (
     <div className="space-y-4">
       <div className="text-right">
-        <Button variant="outline" size="sm">
-          <PlusCircle /> Add New {title}
+        <Button variant="outline" size="lg" asChild>
+          <Link href={`${pathname}/create`}>
+            <PlusCircle /> Add New {title}
+          </Link>
         </Button>
       </div>
       <div className="rounded-md border">
