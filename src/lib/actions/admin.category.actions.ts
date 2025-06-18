@@ -20,6 +20,20 @@ export async function getCategories(): Promise<Category[]> {
   }
 }
 
+export async function getCategoryById(id: string): Promise<Category | null> {
+  try {
+    const category = await prisma.category.findFirst({
+      where: {
+        id: parseInt(id, 10),
+      },
+    });
+    return category;
+  } catch (error) {
+    console.error("Error fetching category by ID:", error);
+    return null;
+  }
+}
+
 export async function createCategory(values: z.infer<typeof formSchema>): Promise<ActionResult> {
   const validatedFields = formSchema.safeParse(values);
   if (!validatedFields.success) {

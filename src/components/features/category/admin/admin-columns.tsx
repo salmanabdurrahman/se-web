@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { ColumnDef } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -60,7 +61,9 @@ export const columns: ColumnDef<AdminCategories>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="text-green-400">Edit category</DropdownMenuItem>
+            <DropdownMenuItem className="text-green-400" asChild>
+              <Link href={`/admin/categories/edit/${category.id}`}>Edit Category</Link>
+            </DropdownMenuItem>
             <DropdownMenuItem className="text-red-400">Delete category</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
