@@ -8,6 +8,7 @@ import { z } from "zod/v4";
 import toast from "react-hot-toast";
 import { Category } from "@prisma/client";
 import { adminCategorySchema as formSchema } from "@/types/admin.category.types";
+import { updateCategory } from "@/lib/actions/admin.category.actions";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -21,7 +22,17 @@ export default function AdminEditCategoryForm({ initialData }: { initialData: Ca
   });
   const router = useRouter();
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {}
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    const result = await updateCategory(initialData.id, values);
+
+    if (result.success) {
+      toast.success(result.message);
+      form.reset();
+      router.push("/admin/categories");
+    } else {
+      toast.error(result.message);
+    }
+  }
 
   return (
     <Form {...form}>

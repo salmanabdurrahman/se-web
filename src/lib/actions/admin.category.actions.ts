@@ -66,3 +66,42 @@ export async function createCategory(values: z.infer<typeof formSchema>): Promis
   revalidatePath("/admin/categories");
   return { success: true, message: "Category created successfully." };
 }
+
+export async function updateCategory(id: number, values: z.infer<typeof formSchema>): Promise<ActionResult> {
+  const validatedFields = formSchema.safeParse(values);
+  if (!validatedFields.success) {
+    return { success: false, message: "Invalid form data." };
+  }
+
+  const { name } = validatedFields.data;
+
+  try {
+    const existingCategory = await prisma.category.findFirst({
+      where: {
+        name: { equals: name, mode: "insensitive" },
+        NOT: {
+          id: id,
+        },
+      },
+    });
+
+    if (existingCategory) {
+      return { success: false, message: "Another category with this name already exists." };
+    }
+
+    await prisma.category.update({
+      where: {
+        id: id,
+      },
+      data: {
+        name: name,
+      },
+    });
+  } catch (error) {
+    console.error("Error updating category:", error);
+    return { success: false, message: "Failed to update category." };
+  }
+
+  revalidatePath("/admin/categories");
+  return { success: true, message: "Category updated successfully." };
+}
