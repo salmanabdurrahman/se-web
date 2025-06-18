@@ -1,5 +1,10 @@
+"use server";
+
+import { revalidatePath } from "next/cache";
 import { Category } from "@prisma/client";
 import prisma from "../prisma";
+import { z } from "zod/v4";
+import { adminCategorySchema as formSchema, ActionResult } from "@/types/admin.category.types";
 
 export async function getCategories(): Promise<Category[]> {
   try {
@@ -13,4 +18,37 @@ export async function getCategories(): Promise<Category[]> {
     console.error("Error fetching categories:", error);
     return [];
   }
+}
+
+export async function createCategory(values: z.infer<typeof formSchema>): Promise<ActionResult> {
+  const validatedFields = formSchema.safeParse(values);
+  if (!validatedFields.success) {
+    return { success: false, message: "Invalid form data." };
+  }
+
+  const { name } = validatedFields.data;
+
+  try {
+    const existingCategory = await prisma.category.findFirst({
+      where: {
+        name: { equals: name, mode: "insensitive" },
+      },
+    });
+
+    if (existingCategory) {
+      return { success: false, message: "Category with this name already exists." };
+    }
+
+    await prisma.category.create({
+      data: {
+        name: name,
+      },
+    });
+  } catch (error) {
+    console.error("Error creating category:", error);
+    return { success: false, message: "Failed to create category." };
+  }
+
+  revalidatePath("/admin/categories");
+  return { success: true, message: "Category created successfully." };
 }

@@ -1,20 +1,16 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod/v4";
+import toast from "react-hot-toast";
+import { adminCategorySchema as formSchema } from "@/types/admin.category.types";
+import { createCategory } from "@/lib/actions/admin.category.actions";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-
-const formSchema = z.object({
-  name: z
-    .string()
-    .min(3, { message: "Category name must be at least 3 characters long" })
-    .max(100, { message: "Category name must be at most 100 characters long" })
-    .trim(),
-});
 
 export default function AdminCreateCategoryForm() {
   const form = useForm<z.infer<typeof formSchema>>({
@@ -23,14 +19,23 @@ export default function AdminCreateCategoryForm() {
       name: "",
     },
   });
+  const router = useRouter();
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    const result = await createCategory(values);
+
+    if (result.success) {
+      toast.success(result.message);
+      form.reset();
+      router.push("/admin/categories");
+    } else {
+      toast.error(result.message);
+    }
   }
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 py-6">
+      <form method="POST" onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 py-6">
         <FormField
           control={form.control}
           name="name"
@@ -48,8 +53,8 @@ export default function AdminCreateCategoryForm() {
           <Button size="sm" variant="outline" type="button" asChild>
             <Link href="/admin/categories">Back</Link>
           </Button>
-          <Button size="sm" type="submit">
-            Submit
+          <Button size="sm" type="submit" disabled={form.formState.isSubmitting}>
+            {form.formState.isSubmitting ? "Creating..." : "Create Category"}
           </Button>
         </div>
       </form>
