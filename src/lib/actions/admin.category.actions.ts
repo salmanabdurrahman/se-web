@@ -105,3 +105,29 @@ export async function updateCategory(id: number, values: z.infer<typeof formSche
   revalidatePath("/admin/categories");
   return { success: true, message: "Category updated successfully." };
 }
+
+export async function deleteCategory(id: number): Promise<ActionResult> {
+  const existingCategory = await prisma.category.findFirst({
+    where: {
+      id,
+    },
+  });
+
+  if (!existingCategory) {
+    return { success: false, message: "Category not found." };
+  }
+
+  try {
+    await prisma.category.delete({
+      where: {
+        id,
+      },
+    });
+  } catch (error) {
+    console.error("Error deleting category:", error);
+    return { success: false, message: "Failed to delete category." };
+  }
+
+  revalidatePath("/admin/categories");
+  return { success: true, message: "Category deleted successfully." };
+}

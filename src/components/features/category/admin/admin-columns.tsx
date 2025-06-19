@@ -1,7 +1,9 @@
 "use client";
 
 import Link from "next/link";
+import { useTransition } from "react";
 import { ColumnDef } from "@tanstack/react-table";
+import toast from "react-hot-toast";
 import { MoreHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -13,6 +15,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { AdminCategories } from "@/types/admin.category.types";
+import { deleteCategory } from "@/lib/actions/admin.category.actions";
 import { formatDate } from "@/lib/utils";
 
 export const columns: ColumnDef<AdminCategories>[] = [
@@ -49,6 +52,19 @@ export const columns: ColumnDef<AdminCategories>[] = [
     header: "Actions",
     cell: ({ row }) => {
       const category = row.original;
+      const [isPending, startTransition] = useTransition();
+
+      async function handleDelete(id: number) {
+        startTransition(async () => {
+          const result = await deleteCategory(id);
+
+          if (result.success) {
+            toast.success(result.message);
+          } else {
+            toast.error(result.message);
+          }
+        });
+      }
 
       return (
         <DropdownMenu>
@@ -64,7 +80,9 @@ export const columns: ColumnDef<AdminCategories>[] = [
             <DropdownMenuItem className="text-green-400" asChild>
               <Link href={`/admin/categories/edit/${category.id}`}>Edit Category</Link>
             </DropdownMenuItem>
-            <DropdownMenuItem className="text-red-400">Delete category</DropdownMenuItem>
+            <DropdownMenuItem className="text-red-400" onSelect={() => handleDelete(category.id)} disabled={isPending}>
+              {isPending ? "Deleting..." : "Delete Category"}
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );
