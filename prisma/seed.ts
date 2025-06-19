@@ -87,6 +87,44 @@ const initialCategories = [
   },
 ];
 
+const initialLocations = [
+  {
+    name: "Jakarta",
+    createdAt: new Date("2025-05-10T10:00:00Z"),
+    updatedAt: new Date("2025-05-10T10:00:00Z"),
+  },
+  {
+    name: "Bandung",
+    createdAt: new Date("2025-05-11T11:30:00Z"),
+    updatedAt: new Date("2025-05-11T11:30:00Z"),
+  },
+  {
+    name: "Surabaya",
+    createdAt: new Date("2025-05-12T09:45:00Z"),
+    updatedAt: new Date("2025-05-12T09:45:00Z"),
+  },
+  {
+    name: "Medan",
+    createdAt: new Date("2025-05-15T14:00:00Z"),
+    updatedAt: new Date("2025-05-15T14:00:00Z"),
+  },
+  {
+    name: "Makassar",
+    createdAt: new Date("2025-05-20T16:20:00Z"),
+    updatedAt: new Date("2025-05-20T16:20:00Z"),
+  },
+  {
+    name: "Palembang",
+    createdAt: new Date("2025-06-01T08:00:00Z"),
+    updatedAt: new Date("2025-06-01T08:00:00Z"),
+  },
+  {
+    name: "Semarang",
+    createdAt: new Date("2025-06-05T18:00:00Z"),
+    updatedAt: new Date("2025-06-05T18:00:00Z"),
+  },
+];
+
 export async function seed() {
   await prisma.user.create({
     data: adminData,
@@ -94,6 +132,11 @@ export async function seed() {
 
   await prisma.category.createMany({
     data: initialCategories,
+    skipDuplicates: true,
+  });
+
+  await prisma.location.createMany({
+    data: initialLocations,
     skipDuplicates: true,
   });
 }
