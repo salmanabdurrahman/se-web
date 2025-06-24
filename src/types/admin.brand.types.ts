@@ -13,3 +13,8 @@ export const adminBrandSchema = z.object({
       message: "Brand logo must be a valid image file with a  type of jpeg, png, or webp",
     }),
 });
+
+export interface ActionResult {
+  success: boolean;
+  message: string;
+}

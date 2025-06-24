@@ -17,7 +17,6 @@ export default function AdminCreateBrandForm() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
-      logo: undefined,
     },
   });
   const router = useRouter();
@@ -25,13 +24,13 @@ export default function AdminCreateBrandForm() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     const result = await createBrand(values);
 
-    // if (result.success) {
-    //   toast.success(result.message);
-    //   form.reset();
-    //   router.push("/admin/brands");
-    // } else {
-    //   toast.error(result.message);
-    // }
+    if (result.success) {
+      toast.success(result.message);
+      form.reset();
+      router.push("/admin/brands");
+    } else {
+      toast.error(result.message);
+    }
   }
 
   return (
@@ -64,7 +63,7 @@ export default function AdminCreateBrandForm() {
               <FormControl>
                 <Input
                   type="file"
-                  placeholder="Brand Logo"
+                  accept="image/*"
                   onChange={e => field.onChange(e.target.files ? e.target.files[0] : null)}
                   required
                 />
