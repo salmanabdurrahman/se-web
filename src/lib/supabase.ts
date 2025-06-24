@@ -5,23 +5,23 @@ const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? "";
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
-export async function uploadFile(file: File, folderName: string) {
+export async function uploadImage(file: File, folderName: string, bucketName: string = "simple-ecommerce") {
   const fileName = `${Date.now()}-${file.name}`;
   const filePath = `${folderName}/${fileName}`;
 
-  const { data, error } = await supabase.storage.from("simple-ecommerce").upload(filePath, file, {
+  // upload the file to supabase storage
+  const { error } = await supabase.storage.from(bucketName).upload(filePath, file, {
     cacheControl: "3600",
     upsert: false,
   });
 
   if (error) {
-    throw error;
+    console.error("Error uploading image:", error);
+    return null;
   }
 
-  return data;
-}
+  // get the public url of the uploaded file
+  const { data } = supabase.storage.from(bucketName).getPublicUrl(filePath);
 
-export function getPublicUrl(path: string) {
-  const { data } = supabase.storage.from("simple-ecommerce").getPublicUrl(path);
   return data.publicUrl;
 }

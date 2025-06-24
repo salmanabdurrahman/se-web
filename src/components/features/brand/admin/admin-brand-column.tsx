@@ -17,7 +17,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { deleteLocation } from "@/lib/actions/admin.location.actions";
 import { formatDate } from "@/lib/utils";
-import { getPublicUrl } from "@/lib/supabase";
 
 export const adminBrandColumns: ColumnDef<Brand>[] = [
   {
@@ -33,9 +32,8 @@ export const adminBrandColumns: ColumnDef<Brand>[] = [
     header: "Logo",
     cell: ({ row }) => {
       const brand = row.original;
-      const storageUrl = getPublicUrl(brand.logo);
 
-      return <img src={storageUrl} alt={brand.name} title={brand.name} width={60} loading="lazy" />;
+      return <img src={brand.logo} alt={brand.name} title={brand.name} width={70} loading="lazy" />;
     },
   },
   {

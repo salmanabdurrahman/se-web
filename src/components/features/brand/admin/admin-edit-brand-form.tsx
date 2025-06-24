@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -54,6 +55,10 @@ export default function AdminEditBrandForm({ initialData }: { initialData: Brand
             </FormItem>
           )}
         />
+        <div>
+          <p className="text-sm font-medium">Current Logo:</p>
+          <Image src={initialData.logo} alt={initialData.name} title={initialData.name} width={100} height={100} />
+        </div>
         <FormField
           control={form.control}
           name="logo"
@@ -65,7 +70,6 @@ export default function AdminEditBrandForm({ initialData }: { initialData: Brand
                   type="file"
                   accept="image/*"
                   onChange={e => field.onChange(e.target.files ? e.target.files[0] : null)}
-                  required
                 />
               </FormControl>
               <FormMessage />

@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { Brand } from "@prisma/client";
 import prisma from "../prisma";
 import { z } from "zod/v4";
-import { uploadFile } from "../supabase";
+import { uploadImage } from "../supabase";
 import { ActionResult, adminBrandSchema as formSchema } from "@/types/admin.brand.types";
 
 export async function getBrands(): Promise<Brand[]> {
@@ -54,15 +54,15 @@ export async function createBrand(values: z.infer<typeof formSchema>): Promise<A
       return { success: false, message: "Brand name already exists." };
     }
 
-    const uploadedLogo = await uploadFile(logo, "brands");
-    if (!uploadedLogo) {
+    const logoUrl = await uploadImage(logo, "brands");
+    if (!logoUrl) {
       return { success: false, message: "Failed to upload brand logo." };
     }
 
     await prisma.brand.create({
       data: {
         name,
-        logo: uploadedLogo.path,
+        logo: logoUrl,
       },
     });
   } catch (error) {
