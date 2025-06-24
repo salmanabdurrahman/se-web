@@ -21,6 +21,20 @@ export async function getBrands(): Promise<Brand[]> {
   }
 }
 
+export async function getBrandById(id: string): Promise<Brand | null> {
+  try {
+    const brand = await prisma.brand.findFirst({
+      where: {
+        id: Number.parseInt(id, 10),
+      },
+    });
+    return brand;
+  } catch (error) {
+    console.error("Error fetching brand by ID:", error);
+    return null;
+  }
+}
+
 export async function createBrand(values: z.infer<typeof formSchema>): Promise<ActionResult> {
   const validatedFields = formSchema.safeParse(values);
   if (!validatedFields.success) {
