@@ -12,6 +12,12 @@ export function formatDate(date: Date | string): string {
     day: "numeric",
   };
 
-  const formattedDate = new Date(date).toLocaleDateString("en-GB", options);
-  return formattedDate;
+  return new Date(date).toLocaleDateString("en-GB", options);
+}
+
+export function formatCurrency(amount: number | bigint): string {
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+  }).format(amount);
 }
