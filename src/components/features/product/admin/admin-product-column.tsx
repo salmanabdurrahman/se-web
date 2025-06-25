@@ -4,11 +4,11 @@ import Link from "next/link";
 import Image from "next/image";
 import { useTransition } from "react";
 import { ColumnDef } from "@tanstack/react-table";
-import { Product } from "@prisma/client";
 import toast from "react-hot-toast";
 import { MoreHorizontal } from "lucide-react";
 import { deleteBrand } from "@/lib/actions/admin.brand.actions";
 import { formatCurrency, formatDate } from "@/lib/utils";
+import { ProductWithRelations } from "@/types/admin.product.types";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -20,7 +20,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
 
-export const adminProductColumns: ColumnDef<Product>[] = [
+export const adminProductColumns: ColumnDef<ProductWithRelations>[] = [
   {
     accessorKey: "id",
     header: "ID",
@@ -30,7 +30,7 @@ export const adminProductColumns: ColumnDef<Product>[] = [
     header: "Name",
   },
   {
-    accessorKey: "image",
+    accessorKey: "images",
     header: "Image",
     cell: ({ row }) => {
       const product = row.original;
@@ -46,6 +46,22 @@ export const adminProductColumns: ColumnDef<Product>[] = [
     },
   },
   {
+    accessorKey: "brand",
+    header: "Brand",
+    cell: ({ row }) => {
+      const product = row.original;
+      return product.brand ? product.brand.name : "No Brand";
+    },
+  },
+  {
+    accessorKey: "category",
+    header: "Category",
+    cell: ({ row }) => {
+      const product = row.original;
+      return product.category ? product.category.name : "No Category";
+    },
+  },
+  {
     accessorKey: "stock",
     header: "Status",
     cell: ({ row }) => {
@@ -56,6 +72,10 @@ export const adminProductColumns: ColumnDef<Product>[] = [
   {
     accessorKey: "orders",
     header: "Total Orders",
+    cell: ({ row }) => {
+      const product = row.original;
+      return product._count.orders;
+    },
   },
   {
     accessorKey: "createdAt",
