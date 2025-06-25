@@ -142,3 +142,36 @@ export async function updateBrand(id: number, values: z.infer<typeof editFormSch
   revalidatePath("/admin/brands");
   return { success: true, message: "Brand updated successfully." };
 }
+
+export async function deleteBrand(id: number): Promise<ActionResult> {
+  try {
+    const brand = await prisma.brand.findFirst({
+      where: {
+        id,
+      },
+      select: {
+        logo: true,
+      },
+    });
+
+    if (!brand) {
+      return { success: false, message: "Brand not found." };
+    }
+
+    if (brand && brand.logo) {
+      await deleteImage(brand.logo);
+    }
+
+    await prisma.brand.delete({
+      where: {
+        id,
+      },
+    });
+  } catch (error) {
+    console.error("Error deleting brand:", error);
+    return { success: false, message: "Failed to delete brand." };
+  }
+
+  revalidatePath("/admin/brands");
+  return { success: true, message: "Brand deleted successfully." };
+}

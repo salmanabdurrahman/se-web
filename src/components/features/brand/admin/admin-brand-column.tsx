@@ -15,7 +15,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { deleteLocation } from "@/lib/actions/admin.location.actions";
+import { deleteBrand } from "@/lib/actions/admin.brand.actions";
 import { formatDate } from "@/lib/utils";
 
 export const adminBrandColumns: ColumnDef<Brand>[] = [
@@ -63,17 +63,17 @@ export const adminBrandColumns: ColumnDef<Brand>[] = [
       const brand = row.original;
       const [isPending, startTransition] = useTransition();
 
-      //   async function handleDelete(id: number) {
-      //     startTransition(async () => {
-      //       const result = await deleteLocation(id);
+      async function handleDelete(id: number) {
+        startTransition(async () => {
+          const result = await deleteBrand(id);
 
-      //       if (result.success) {
-      //         toast.success(result.message);
-      //       } else {
-      //         toast.error(result.message);
-      //       }
-      //     });
-      //   }
+          if (result.success) {
+            toast.success(result.message);
+          } else {
+            toast.error(result.message);
+          }
+        });
+      }
 
       return (
         <DropdownMenu>
@@ -89,9 +89,9 @@ export const adminBrandColumns: ColumnDef<Brand>[] = [
             <DropdownMenuItem className="text-green-400" asChild>
               <Link href={`/admin/brands/edit/${brand.id}`}>Edit Brand</Link>
             </DropdownMenuItem>
-            {/* <DropdownMenuItem className="text-red-400" onSelect={() => handleDelete(brand.id)} disabled={isPending}>
-                            {isPending ? "Deleting..." : "Delete Location"}
-                          </DropdownMenuItem> */}
+            <DropdownMenuItem className="text-red-400" onSelect={() => handleDelete(brand.id)} disabled={isPending}>
+              {isPending ? "Deleting..." : "Delete Brand"}
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );
