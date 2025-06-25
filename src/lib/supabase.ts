@@ -25,3 +25,21 @@ export async function uploadImage(file: File, folderName: string, bucketName: st
 
   return data.publicUrl;
 }
+
+export async function deleteImage(publicUrl: string, bucketName: string = "simple-ecommerce") {
+  const filePath = publicUrl.split(`/${bucketName}/`)[1];
+
+  if (!filePath) {
+    console.error("Invalid public URL:", publicUrl);
+    return false;
+  }
+
+  const { error } = await supabase.storage.from(bucketName).remove([filePath]);
+
+  if (error) {
+    console.error("Error deleting image:", error);
+    return false;
+  }
+
+  return true;
+}

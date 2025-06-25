@@ -8,8 +8,8 @@ import { useForm } from "react-hook-form";
 import { z } from "zod/v4";
 import { Brand } from "@prisma/client";
 import toast from "react-hot-toast";
-import { adminBrandSchema as formSchema } from "@/types/admin.brand.types";
-import { createBrand } from "@/lib/actions/admin.brand.actions";
+import { adminEditBrandSchema as formSchema } from "@/types/admin.brand.types";
+import { updateBrand } from "@/lib/actions/admin.brand.actions";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -24,14 +24,15 @@ export default function AdminEditBrandForm({ initialData }: { initialData: Brand
   const router = useRouter();
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    // const result = await createBrand(values);
-    // if (result.success) {
-    //   toast.success(result.message);
-    //   form.reset();
-    //   router.push("/admin/brands");
-    // } else {
-    //   toast.error(result.message);
-    // }
+    const result = await updateBrand(initialData.id, values);
+
+    if (result.success) {
+      toast.success(result.message);
+      form.reset();
+      router.push("/admin/brands");
+    } else {
+      toast.error(result.message);
+    }
   }
 
   return (
@@ -81,7 +82,7 @@ export default function AdminEditBrandForm({ initialData }: { initialData: Brand
             <Link href="/admin/brands">Back</Link>
           </Button>
           <Button size="sm" type="submit" disabled={form.formState.isSubmitting}>
-            {form.formState.isSubmitting ? "Creating..." : "Create Brand"}
+            {form.formState.isSubmitting ? "Updating..." : "Update Brand"}
           </Button>
         </div>
       </form>

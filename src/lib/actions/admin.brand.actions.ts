@@ -4,8 +4,12 @@ import { revalidatePath } from "next/cache";
 import { Brand } from "@prisma/client";
 import prisma from "../prisma";
 import { z } from "zod/v4";
-import { uploadImage } from "../supabase";
-import { ActionResult, adminBrandSchema as formSchema } from "@/types/admin.brand.types";
+import { deleteImage, uploadImage } from "../supabase";
+import {
+  ActionResult,
+  adminBrandSchema as formSchema,
+  adminEditBrandSchema as editFormSchema,
+} from "@/types/admin.brand.types";
 
 export async function getBrands(): Promise<Brand[]> {
   try {
@@ -72,4 +76,69 @@ export async function createBrand(values: z.infer<typeof formSchema>): Promise<A
 
   revalidatePath("/admin/brands");
   return { success: true, message: "Brand created successfully." };
+}
+
+export async function updateBrand(id: number, values: z.infer<typeof editFormSchema>): Promise<ActionResult> {
+  const validatedFields = editFormSchema.safeParse(values);
+  if (!validatedFields.success) {
+    return { success: false, message: "Invalid form data." };
+  }
+
+  const { name, logo } = validatedFields.data;
+
+  try {
+    const existingBrand = await prisma.brand.findFirst({
+      where: {
+        name: { equals: name, mode: "insensitive" },
+        NOT: {
+          id,
+        },
+      },
+    });
+
+    if (existingBrand) {
+      return { success: false, message: "Another brand with this name already exists." };
+    }
+
+    const currentBrand = await prisma.brand.findFirst({
+      where: {
+        id,
+      },
+    });
+
+    if (!currentBrand) {
+      return { success: false, message: "Brand not found." };
+    }
+
+    let logoUrl = currentBrand.logo;
+    if (logo && logo instanceof File) {
+      const uploadResult = await uploadImage(logo, "brands");
+
+      if (!uploadResult) {
+        return { success: false, message: "Failed to upload brand logo." };
+      }
+
+      logoUrl = uploadResult;
+
+      if (currentBrand.logo && currentBrand.logo !== logoUrl) {
+        await deleteImage(currentBrand.logo);
+      }
+    }
+
+    await prisma.brand.update({
+      where: {
+        id,
+      },
+      data: {
+        name,
+        logo: logoUrl,
+      },
+    });
+  } catch (error) {
+    console.error("Error updating brand:", error);
+    return { success: false, message: "Failed to update brand." };
+  }
+
+  revalidatePath("/admin/brands");
+  return { success: true, message: "Brand updated successfully." };
 }
