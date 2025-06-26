@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod/v4";
+import { Brand, Category, Location } from "@prisma/client";
 import toast from "react-hot-toast";
 import { adminLocationSchema as formSchema } from "@/types/admin.location.types";
 import { createLocation } from "@/lib/actions/admin.location.actions";
@@ -14,7 +15,13 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
-export default function AdminCreateProductForm() {
+interface AdminCreateProductFormProps {
+  brands: Brand[];
+  categories: Category[];
+  locations: Location[];
+}
+
+export default function AdminCreateProductForm({ brands, categories, locations }: AdminCreateProductFormProps) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -150,8 +157,11 @@ export default function AdminCreateProductForm() {
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    <SelectItem value="brand1">Brand 1</SelectItem>
-                    <SelectItem value="brand2">Brand 2</SelectItem>
+                    {brands.map(brand => (
+                      <SelectItem key={brand.id} value={String(brand.id)}>
+                        {brand.name}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
                 <FormMessage />
@@ -173,8 +183,11 @@ export default function AdminCreateProductForm() {
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    <SelectItem value="category1">Category 1</SelectItem>
-                    <SelectItem value="category2">Category 2</SelectItem>
+                    {categories.map(category => (
+                      <SelectItem key={category.id} value={String(category.id)}>
+                        {category.name}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
                 <FormMessage />
@@ -194,8 +207,11 @@ export default function AdminCreateProductForm() {
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    <SelectItem value="location1">Location 1</SelectItem>
-                    <SelectItem value="location2">Location 2</SelectItem>
+                    {locations.map(location => (
+                      <SelectItem key={location.id} value={String(location.id)}>
+                        {location.name}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
                 <FormMessage />
