@@ -7,8 +7,8 @@ import { useForm } from "react-hook-form";
 import { z } from "zod/v4";
 import { Brand, Category, Location } from "@prisma/client";
 import toast from "react-hot-toast";
-import { adminLocationSchema as formSchema } from "@/types/admin.location.types";
-import { createLocation } from "@/lib/actions/admin.location.actions";
+import { adminProductSchema as formSchema } from "@/types/admin.product.types";
+import { createProduct } from "@/lib/actions/admin.product.actions";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -26,6 +26,13 @@ export default function AdminCreateProductForm({ brands, categories, locations }
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
+      images: [],
+      description: "",
+      price: "",
+      stock: "ready",
+      brandId: "",
+      categoryId: "",
+      locationId: "",
     },
   });
   const router = useRouter();
@@ -41,15 +48,15 @@ export default function AdminCreateProductForm({ brands, categories, locations }
   }
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    const result = await createLocation(values);
+    const result = await createProduct(values);
 
-    // if (result.success) {
-    //   toast.success(result.message);
-    //   router.push("/admin/locations");
-    //   form.reset();
-    // } else {
-    //   toast.error(result.message);
-    // }
+    if (result.success) {
+      toast.success(result.message);
+      router.push("/admin/products");
+      form.reset();
+    } else {
+      toast.error(result.message);
+    }
   }
 
   return (
