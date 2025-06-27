@@ -20,8 +20,12 @@ import { formatDate } from "@/lib/utils";
 
 export const adminBrandColumns: ColumnDef<Brand>[] = [
   {
-    accessorKey: "id",
-    header: "ID",
+    id: "number",
+    header: "No.",
+    cell: ({ row }) => {
+      const numberOfBrands = row.index;
+      return numberOfBrands + 1;
+    },
   },
   {
     accessorKey: "name",

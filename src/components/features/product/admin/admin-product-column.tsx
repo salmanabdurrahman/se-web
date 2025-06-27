@@ -22,8 +22,12 @@ import { Badge } from "@/components/ui/badge";
 
 export const adminProductColumns: ColumnDef<ProductWithRelations>[] = [
   {
-    accessorKey: "id",
-    header: "ID",
+    id: "number",
+    header: "No.",
+    cell: ({ row }) => {
+      const numberOfProducts = row.index;
+      return numberOfProducts + 1;
+    },
   },
   {
     accessorKey: "name",

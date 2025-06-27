@@ -20,8 +20,12 @@ import { formatDate } from "@/lib/utils";
 
 export const adminLocationColumns: ColumnDef<AdminLocations>[] = [
   {
-    accessorKey: "id",
-    header: "ID",
+    id: "number",
+    header: "No.",
+    cell: ({ row }) => {
+      const numberOfLocations = row.index;
+      return numberOfLocations + 1;
+    },
   },
   {
     accessorKey: "name",
