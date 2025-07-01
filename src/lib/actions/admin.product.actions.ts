@@ -209,3 +209,39 @@ export async function updateProduct(id: string, values: z.infer<typeof editFormS
   revalidatePath("/admin/products");
   return { success: true, message: "Product updated successfully." };
 }
+
+export async function deleteProduct(id: string): Promise<ActionResult> {
+  try {
+    const product = await prisma.product.findFirst({
+      where: {
+        id,
+      },
+      select: {
+        images: true,
+      },
+    });
+    if (!product) {
+      return { success: false, message: "Product not found." };
+    }
+
+    await prisma.product.delete({
+      where: {
+        id,
+      },
+    });
+
+    if (product.images && product.images.length > 0) {
+      await Promise.all(
+        product.images.map(async image => {
+          return await deleteImage(image);
+        })
+      );
+    }
+  } catch (error) {
+    console.error("Error deleting product:", error);
+    return { success: false, message: "Failed to delete product." };
+  }
+
+  revalidatePath("/admin/products");
+  return { success: true, message: "Product deleted successfully." };
+}

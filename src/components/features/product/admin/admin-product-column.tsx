@@ -6,7 +6,7 @@ import { useTransition } from "react";
 import { ColumnDef } from "@tanstack/react-table";
 import toast from "react-hot-toast";
 import { MoreHorizontal } from "lucide-react";
-import { deleteBrand } from "@/lib/actions/admin.brand.actions";
+import { deleteProduct } from "@/lib/actions/admin.product.actions";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import { ProductWithRelations } from "@/types/admin.product.types";
 import { Button } from "@/components/ui/button";
@@ -70,7 +70,8 @@ export const adminProductColumns: ColumnDef<ProductWithRelations>[] = [
     header: "Status",
     cell: ({ row }) => {
       const product = row.original;
-      return <Badge>{product.stock}</Badge>;
+      const badgeVariant = product.stock === "ready" ? "success" : "warning";
+      return <Badge variant={badgeVariant}>{product.stock === "ready" ? "Ready" : "Pre-order"}</Badge>;
     },
   },
   {
@@ -104,17 +105,17 @@ export const adminProductColumns: ColumnDef<ProductWithRelations>[] = [
       const product = row.original;
       const [isPending, startTransition] = useTransition();
 
-      //   async function handleDelete(id: number) {
-      //     startTransition(async () => {
-      //       const result = await deleteBrand(id);
+      async function handleDelete(id: string) {
+        startTransition(async () => {
+          const result = await deleteProduct(id);
 
-      //       if (result.success) {
-      //         toast.success(result.message);
-      //       } else {
-      //         toast.error(result.message);
-      //       }
-      //     });
-      //   }
+          if (result.success) {
+            toast.success(result.message);
+          } else {
+            toast.error(result.message);
+          }
+        });
+      }
 
       return (
         <DropdownMenu>
@@ -130,9 +131,9 @@ export const adminProductColumns: ColumnDef<ProductWithRelations>[] = [
             <DropdownMenuItem className="text-green-400" asChild>
               <Link href={`/admin/products/edit/${product.id}`}>Edit Product</Link>
             </DropdownMenuItem>
-            {/* <DropdownMenuItem className="text-red-400" onSelect={() => handleDelete(product.id)} disabled={isPending}>
+            <DropdownMenuItem className="text-red-400" onSelect={() => handleDelete(product.id)} disabled={isPending}>
               {isPending ? "Deleting..." : "Delete Product"}
-            </DropdownMenuItem> */}
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );

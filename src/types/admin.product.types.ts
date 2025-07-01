@@ -35,7 +35,7 @@ export const adminProductSchema = z.object({
     .min(1, { message: "Image is required" })
     .max(5, { message: "A maximum of 5 images can be uploaded" })
     .refine(files => files.every(file => file.size <= MAX_IMAGE_SIZE), {
-      message: `Each image must be less than ${MAX_IMAGE_SIZE / 1024 / 1024} MB`,
+      message: `Each image must be less than ${MAX_IMAGE_SIZE / 1024} kb`,
     })
     .refine(files => files.every(file => ACCEPTED_IMAGE_TYPES.includes(file.type)), {
       message: "Only JPEG, JPG, PNG, and WebP image formats are allowed",
