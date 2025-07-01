@@ -48,6 +48,10 @@ export const adminProductSchema = z.object({
   locationId: z.string().min(1, { message: "Location is required" }),
 });
 
+export const adminEditProductSchema = adminProductSchema.extend({
+  images: z.array(z.instanceof(File)).optional(),
+});
+
 export interface ActionResult {
   success: boolean;
   message: string;

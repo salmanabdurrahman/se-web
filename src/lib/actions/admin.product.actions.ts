@@ -3,8 +3,14 @@
 import { revalidatePath } from "next/cache";
 import prisma from "../prisma";
 import { z } from "zod/v4";
-import { uploadImage } from "../supabase";
-import { ActionResult, adminProductSchema as formSchema, ProductWithRelations } from "@/types/admin.product.types";
+import { deleteImage, uploadImage } from "../supabase";
+import isEqual from "lodash/isEqual";
+import {
+  ActionResult,
+  adminEditProductSchema as editFormSchema,
+  adminProductSchema as formSchema,
+  ProductWithRelations,
+} from "@/types/admin.product.types";
 
 export async function getProducts(): Promise<ProductWithRelations[]> {
   try {
@@ -34,6 +40,37 @@ export async function getProducts(): Promise<ProductWithRelations[]> {
   } catch (error) {
     console.error("Error fetching products:", error);
     return [];
+  }
+}
+
+export async function getProductById(id: string): Promise<ProductWithRelations | null> {
+  try {
+    const product = await prisma.product.findFirst({
+      where: {
+        id,
+      },
+      include: {
+        category: {
+          select: {
+            name: true,
+          },
+        },
+        brand: {
+          select: {
+            name: true,
+          },
+        },
+        _count: {
+          select: {
+            orders: true,
+          },
+        },
+      },
+    });
+    return product;
+  } catch (error) {
+    console.error("Error fetching product by ID:", error);
+    return null;
   }
 }
 
@@ -84,4 +121,91 @@ export async function createProduct(values: z.infer<typeof formSchema>): Promise
 
   revalidatePath("/admin/products");
   return { success: true, message: "Product created successfully." };
+}
+
+export async function updateProduct(id: string, values: z.infer<typeof editFormSchema>): Promise<ActionResult> {
+  const validatedFields = editFormSchema.safeParse(values);
+  if (!validatedFields.success) {
+    return { success: false, message: "Invalid form data." };
+  }
+
+  const { name, images, description, price, stock, brandId, categoryId, locationId } = validatedFields.data;
+
+  try {
+    // check if another product with the same name exists, excluding the current product
+    const existingProduct = await prisma.product.findFirst({
+      where: {
+        name: { equals: name, mode: "insensitive" },
+        NOT: {
+          id,
+        },
+      },
+    });
+    if (existingProduct) {
+      return { success: false, message: "Another product with this name already exists." };
+    }
+
+    // fetch the current product to compare images
+    const currentProduct = await prisma.product.findFirst({
+      where: {
+        id,
+      },
+    });
+    if (!currentProduct) {
+      return { success: false, message: "Product not found." };
+    }
+
+    let imagesUrls: string[] = currentProduct.images; // default value is a copy of current images
+    if (images && images.length > 0 && images[0] instanceof File) {
+      const validatedImages = formSchema.shape.images.safeParse(images);
+      if (!validatedImages.success) {
+        return { success: false, message: "Invalid image files." };
+      }
+
+      // upload new images
+      const uploadResults = await Promise.all(
+        images.map(async image => {
+          const url = await uploadImage(image, "products");
+          return url;
+        })
+      );
+      if (uploadResults.some(url => !url)) {
+        return { success: false, message: "Failed to upload one or more product images." };
+      }
+
+      imagesUrls = uploadResults as string[];
+    }
+
+    // update the product with new data
+    await prisma.product.update({
+      where: {
+        id,
+      },
+      data: {
+        name,
+        images: imagesUrls,
+        description,
+        price: BigInt(price),
+        stock,
+        brandId: Number(brandId),
+        categoryId: Number(categoryId),
+        locationId: Number(locationId),
+      },
+    });
+
+    // delete old images if they are not in the new images list
+    if (currentProduct.images && !isEqual(currentProduct.images, imagesUrls)) {
+      await Promise.all(
+        currentProduct.images.map(async image => {
+          return await deleteImage(image);
+        })
+      );
+    }
+  } catch (error) {
+    console.error("Error updating product:", error);
+    return { success: false, message: "Failed to update product." };
+  }
+
+  revalidatePath("/admin/products");
+  return { success: true, message: "Product updated successfully." };
 }
