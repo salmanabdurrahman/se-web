@@ -1,13 +1,13 @@
 import { createClient } from "@supabase/supabase-js";
-
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL ?? "";
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? "";
+import crypto from "node:crypto";
+import { supabaseAnonKey, supabaseUrl } from "@/constants/appConfig";
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 export async function uploadImage(file: File, folderName: string, bucketName: string = "simple-ecommerce") {
-  const fileName = `${Date.now()}-${file.name}`;
-  const filePath = `${folderName}/${fileName}`;
+  const fileExtension = file.name.split(".").pop();
+  const randomName = crypto.randomBytes(16).toString("hex");
+  const filePath = `${folderName}/img${randomName}.${fileExtension}`; // example: "products/img1f1c7ef743deb517f74a2f88aa1b799f.jpg"
 
   // upload the file to supabase storage
   const { error } = await supabase.storage.from(bucketName).upload(filePath, file, {
@@ -27,12 +27,15 @@ export async function uploadImage(file: File, folderName: string, bucketName: st
 }
 
 export async function deleteImage(publicUrl: string, bucketName: string = "simple-ecommerce") {
-  const filePath = publicUrl.split(`/${bucketName}/`)[1];
+  let filePath = publicUrl.split(`/${bucketName}/`)[1];
 
   if (!filePath) {
-    console.error("Invalid public URL:", publicUrl);
+    console.error("Invalid public URL format:", publicUrl);
     return false;
   }
+
+  filePath = filePath.split("?")[0];
+  filePath = decodeURIComponent(filePath);
 
   const { error } = await supabase.storage.from(bucketName).remove([filePath]);
 

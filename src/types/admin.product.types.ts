@@ -1,7 +1,7 @@
 import { z } from "zod/v4";
 import { Prisma } from "@prisma/client";
 
-const MAX_IMAGE_SIZE = 2 * 1024 * 1024; // 2 MB
+const MAX_IMAGE_SIZE = 500 * 1024; // 500 kb
 const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp", "image/jpg"];
 
 export type ProductWithRelations = Prisma.ProductGetPayload<{

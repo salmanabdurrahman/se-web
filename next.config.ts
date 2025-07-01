@@ -1,16 +1,22 @@
 import type { NextConfig } from "next";
+import { supabaseHostname } from "@/constants/appConfig";
 
 const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "qevzmqvoemkwwplancqu.supabase.co",
+        hostname: supabaseHostname,
         port: "",
         pathname: "/storage/v1/object/public/**",
         search: "",
       },
     ],
+  },
+  experimental: {
+    serverActions: {
+      bodySizeLimit: "3mb",
+    },
   },
 };
 
