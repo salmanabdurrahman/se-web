@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import { getOrders } from "@/lib/actions/admin.order.actions";
 import { adminOrderColumns as columns } from "@/components/features/order/admin-order-column";
 import { AdminDataTable } from "@/components/ui/admin-data-table";
 
@@ -8,10 +9,12 @@ export const metadata: Metadata = {
 };
 
 export default async function AdminOrdersPage() {
+  const data = await getOrders();
+
   return (
     <section className="container mx-auto py-10">
       <h1 className="text-2xl font-bold">All Orders</h1>
-      <AdminDataTable title="Order" columns={columns} data={[]} isReadOnly />
+      <AdminDataTable title="Order" columns={columns} data={data} isReadOnly />
     </section>
   );
 }
