@@ -2,34 +2,89 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from "@tanstack/react-table";
+import React from "react";
+import {
+  ColumnDef,
+  flexRender,
+  getCoreRowModel,
+  getPaginationRowModel,
+  useReactTable,
+  VisibilityState,
+} from "@tanstack/react-table";
 import { PlusCircle } from "lucide-react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   title?: string;
+  isReadOnly?: boolean;
 }
 
-export function AdminDataTable<TData, TValue>({ columns, data, title }: DataTableProps<TData, TValue>) {
+export function AdminDataTable<TData, TValue>({
+  columns,
+  data,
+  title,
+  isReadOnly = false,
+}: DataTableProps<TData, TValue>) {
+  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({
+    createdAt: false,
+    updatedAt: false,
+  });
+  const pathname = usePathname();
+
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    onColumnVisibilityChange: setColumnVisibility,
+    state: {
+      columnVisibility,
+    },
   });
-  const pathname = usePathname();
 
   return (
     <div className="space-y-4">
-      <div className="text-right">
-        <Button variant="outline" size="lg" asChild>
-          <Link href={`${pathname}/create`}>
-            <PlusCircle /> Add New {title}
-          </Link>
-        </Button>
+      <div className="flex items-center space-x-2">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" size="lg" className="ml-auto">
+              Columns
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            {table
+              .getAllColumns()
+              .filter(column => column.getCanHide())
+              .map(column => {
+                return (
+                  <DropdownMenuCheckboxItem
+                    key={column.id}
+                    className="capitalize"
+                    checked={column.getIsVisible()}
+                    onCheckedChange={value => column.toggleVisibility(!!value)}
+                  >
+                    {column.id}
+                  </DropdownMenuCheckboxItem>
+                );
+              })}
+          </DropdownMenuContent>
+        </DropdownMenu>
+        {!isReadOnly && (
+          <Button variant="outline" size="lg" asChild>
+            <Link href={`${pathname}/create`}>
+              <PlusCircle /> Add New {title}
+            </Link>
+          </Button>
+        )}
       </div>
       <div className="rounded-md border">
         <Table>
