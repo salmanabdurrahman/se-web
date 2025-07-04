@@ -20,7 +20,7 @@ export default function AdminLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.variable} antialiased`}>
+      <body className={`${inter.className} antialiased`}>
         <Alert />
         {children}
       </body>
