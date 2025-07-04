@@ -20,11 +20,9 @@ export default function CustomerLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${poppins.className} antialiased`}>
-        <Alert />
-        {children}
-      </body>
-    </html>
+    <main className={`${poppins.className}`} suppressHydrationWarning>
+      <Alert />
+      {children}
+    </main>
   );
 }

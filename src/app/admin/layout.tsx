@@ -19,11 +19,9 @@ export default function AdminLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${inter.className} antialiased`}>
-        <Alert />
-        {children}
-      </body>
-    </html>
+    <main className={`${inter.className}`} suppressHydrationWarning>
+      <Alert />
+      {children}
+    </main>
   );
 }
