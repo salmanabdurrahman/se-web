@@ -1,5 +1,5 @@
 import type { NextConfig } from "next";
-import { supabaseHostname } from "@/constants/appConfig";
+import { supabaseHostname } from "@/constants/app-config";
 
 const nextConfig: NextConfig = {
   images: {

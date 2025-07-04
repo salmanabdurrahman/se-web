@@ -1,6 +1,6 @@
 import { createClient } from "@supabase/supabase-js";
 import crypto from "node:crypto";
-import { supabaseAnonKey, supabaseUrl } from "@/constants/appConfig";
+import { supabaseAnonKey, supabaseUrl } from "@/constants/app-config";
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
