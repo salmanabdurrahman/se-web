@@ -28,7 +28,9 @@ export default function CustomerLoginForm() {
         className="flex w-[500px] flex-col gap-5 rounded-3xl border border-[#E5E5E5] bg-white p-[50px_30px]"
       >
         <div className="flex justify-center">
-          <Image src="/assets/images/logos/logo-black.svg" alt="logo" width={158} height={42} priority />
+          <Link href="/">
+            <Image src="/assets/images/logos/logo-black.svg" alt="logo" width={158} height={42} priority />
+          </Link>
         </div>
         <h1 className="text-2xl leading-[34px] font-bold">Sign In</h1>
         <div className="flex items-center gap-[10px] rounded-full border border-[#E5E5E5] p-[12px_20px] transition-all duration-300 focus-within:ring-2 focus-within:ring-[#FFC736]">
