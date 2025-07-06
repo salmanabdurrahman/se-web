@@ -2,10 +2,19 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useState } from "react";
+import { useActionState, useEffect, useState } from "react";
+import toast from "react-hot-toast";
+import { customerRegister } from "@/lib/actions/customer.auth.actions";
 
 export default function CustomerRegisterForm() {
+  const [state, action, pending] = useActionState(customerRegister, undefined);
   const [showPassword, setShowPassword] = useState(false);
+
+  useEffect(() => {
+    if (state?.message) {
+      toast.error(state.message);
+    }
+  }, [state]);
 
   function handlePasswordToggle() {
     setShowPassword(prev => !prev);
@@ -14,7 +23,7 @@ export default function CustomerRegisterForm() {
   return (
     <div className="container mx-auto flex max-w-[1130px] flex-1 items-center justify-center py-5">
       <form
-        action=""
+        action={action}
         method="POST"
         className="flex w-[500px] flex-col gap-5 rounded-3xl border border-[#E5E5E5] bg-white p-[50px_30px]"
       >
@@ -39,6 +48,7 @@ export default function CustomerRegisterForm() {
             required
           />
         </div>
+        {state?.errors?.name && <p className="text-sm text-red-400">{state.errors.name[0]}</p>}
         <div className="flex items-center gap-[10px] rounded-full border border-[#E5E5E5] p-[12px_20px] transition-all duration-300 focus-within:ring-2 focus-within:ring-[#FFC736]">
           <div className="flex shrink-0">
             <Image src="/assets/icons/sms.svg" alt="icon" width={24} height={24} />
@@ -53,6 +63,7 @@ export default function CustomerRegisterForm() {
             required
           />
         </div>
+        {state?.errors?.email && <p className="text-sm text-red-400">{state.errors.email[0]}</p>}
         <div className="flex flex-col gap-[10px]">
           <div className="flex items-center gap-[10px] rounded-full border border-[#E5E5E5] p-[12px_20px] transition-all duration-300 focus-within:ring-2 focus-within:ring-[#FFC736]">
             <div className="flex shrink-0">
@@ -74,12 +85,14 @@ export default function CustomerRegisterForm() {
               Forgot Password
             </a> */}
         </div>
+        {state?.errors?.password && <p className="text-sm text-red-400">{state.errors.password[0]}</p>}
         <div className="flex flex-col gap-3">
           <button
             type="submit"
             className="rounded-full bg-[#0D5CD7] p-[12px_24px] text-center font-semibold text-white"
+            disabled={pending}
           >
-            Create New Account
+            {pending ? "Creating..." : "Create New Account"}
           </button>
           <Link
             href="/login"
