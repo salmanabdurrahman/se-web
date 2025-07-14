@@ -13,5 +13,5 @@ export default async function AdminLoginLayout({ children }: { children: React.R
     return redirect("/admin");
   }
 
-  return <main>{children}</main>;
+  return <>{children}</>;
 }

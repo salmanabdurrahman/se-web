@@ -15,8 +15,8 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   }
 
   return (
-    <main>
+    <>
       <AdminLayoutShell>{children}</AdminLayoutShell>
-    </main>
+    </>
   );
 }

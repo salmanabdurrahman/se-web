@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 import { getOrders } from "@/lib/actions/admin.order.actions";
-import { adminOrderColumns as columns } from "@/components/features/order/admin-order-column";
+import { adminOrderColumns as columns } from "@/components/features/order/admin/admin-order-column";
 import { AdminDataTable } from "@/components/ui/admin-data-table";
 
 export const metadata: Metadata = {
