@@ -20,7 +20,7 @@ export default function CustomerCategories({ data }: CustomerCategoriesProps) {
       <div className="grid grid-cols-4 gap-[30px]">
         {data.map(category => (
           <Link href="/" className="categories-card" key={category.id}>
-            <div className="flex w-full items-center gap-[14px] rounded-[20px] bg-white p-5 ring-1 ring-[#E5E5E5] transition-all duration-300 hover:ring-2 hover:ring-[#FFC736]">
+            <div className="flex h-full w-full items-center gap-[14px] rounded-[20px] bg-white p-5 ring-1 ring-[#E5E5E5] transition-all duration-300 hover:ring-2 hover:ring-[#FFC736]">
               <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#0D5CD7]">
                 <Image src="/assets/icons/mobile.svg" alt="icon" width={18} height={23} />
               </div>
