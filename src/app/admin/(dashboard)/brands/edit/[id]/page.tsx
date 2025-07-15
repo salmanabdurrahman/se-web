@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { getBrandById } from "@/lib/actions/admin.brand.actions";
-import AdminEditBrandForm from "@/components/features/brand/admin/admin-edit-brand-form";
+import AdminEditBrandForm from "@/components/features/admin/brand/admin-edit-brand-form";
 
 export const metadata: Metadata = {
   title: "Admin Edit Brand | SE",

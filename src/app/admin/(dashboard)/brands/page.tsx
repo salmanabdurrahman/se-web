@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import { adminBrandColumns as columns } from "@/components/features/brand/admin/admin-brand-column";
+import { adminBrandColumns as columns } from "@/components/features/admin/brand/admin-brand-column";
 import { AdminDataTable } from "@/components/ui/admin-data-table";
 import { getBrands } from "@/lib/actions/admin.brand.actions";
 

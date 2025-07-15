@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 import { redirect } from "next/navigation";
-import AdminEditCategoryForm from "@/components/features/category/admin/admin-edit-category-form";
+import AdminEditCategoryForm from "@/components/features/admin/category/admin-edit-category-form";
 import { getCategoryById } from "@/lib/actions/admin.category.actions";
 
 export const metadata: Metadata = {

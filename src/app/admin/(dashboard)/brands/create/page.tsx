@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import AdminCreateBrandForm from "@/components/features/brand/admin/admin-create-brand-form";
+import AdminCreateBrandForm from "@/components/features/admin/brand/admin-create-brand-form";
 
 export const metadata: Metadata = {
   title: "Admin Create Brand | SE",

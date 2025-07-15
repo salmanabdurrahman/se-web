@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import AdminCreateCategoryForm from "@/components/features/category/admin/admin-create-category-form";
+import AdminCreateCategoryForm from "@/components/features/admin/category/admin-create-category-form";
 
 export const metadata: Metadata = {
   title: "Admin Create Category | SE",

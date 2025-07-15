@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 import { getLocations } from "@/lib/actions/admin.location.actions";
 import { AdminDataTable } from "@/components/ui/admin-data-table";
-import { adminLocationColumns as columns } from "@/components/features/location/admin/admin-location-column";
+import { adminLocationColumns as columns } from "@/components/features/admin/location/admin-location-column";
 
 export const metadata: Metadata = {
   title: "Admin Locations | SE",

@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import AdminCreateLocationForm from "@/components/features/location/admin/admin-create-location-form";
+import AdminCreateLocationForm from "@/components/features/admin/location/admin-create-location-form";
 
 export const metadata: Metadata = {
   title: "Admin Create Location | SE",

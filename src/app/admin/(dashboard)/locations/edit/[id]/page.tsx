@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { getLocationById } from "@/lib/actions/admin.location.actions";
-import AdminEditLocationForm from "@/components/features/location/admin/admin-edit-location-form";
+import AdminEditLocationForm from "@/components/features/admin/location/admin-edit-location-form";
 
 export const metadata: Metadata = {
   title: "Admin Edit Location | SE",

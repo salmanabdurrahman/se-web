@@ -2,7 +2,7 @@ import { Metadata } from "next";
 import { getBrands } from "@/lib/actions/admin.brand.actions";
 import { getCategories } from "@/lib/actions/admin.category.actions";
 import { getLocations } from "@/lib/actions/admin.location.actions";
-import AdminCreateProductForm from "@/components/features/product/admin/admin-create-product-form";
+import AdminCreateProductForm from "@/components/features/admin/product/admin-create-product-form";
 
 export const metadata: Metadata = {
   title: "Admin Create Product | SE",

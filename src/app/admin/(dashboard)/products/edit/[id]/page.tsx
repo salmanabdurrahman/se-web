@@ -4,7 +4,7 @@ import { getBrands } from "@/lib/actions/admin.brand.actions";
 import { getCategories } from "@/lib/actions/admin.category.actions";
 import { getLocations } from "@/lib/actions/admin.location.actions";
 import { getProductById } from "@/lib/actions/admin.product.actions";
-import AdminEditProductForm from "@/components/features/product/admin/admin-edit-product-form";
+import AdminEditProductForm from "@/components/features/admin/product/admin-edit-product-form";
 
 export const metadata: Metadata = {
   title: "Admin Edit Product | SE",

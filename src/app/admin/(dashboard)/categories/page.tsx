@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 import { getCategories } from "@/lib/actions/admin.category.actions";
-import { columns } from "@/components/features/category/admin/admin-columns";
+import { columns } from "@/components/features/admin/category/admin-columns";
 import { AdminDataTable } from "@/components/ui/admin-data-table";
 import { adminDummyCategories } from "@/constants/dummy-data";
 
