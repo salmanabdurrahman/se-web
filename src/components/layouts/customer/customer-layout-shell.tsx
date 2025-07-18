@@ -1,13 +1,16 @@
+import { validateRequest } from "@/lib/auth";
 import CustomerNav from "./customer-nav";
 
 interface CustomerLayoutShellProps {
   children: React.ReactNode;
 }
 
-export default function CustomerLayoutShell({ children }: CustomerLayoutShellProps) {
+export default async function CustomerLayoutShell({ children }: CustomerLayoutShellProps) {
+  const { user } = await validateRequest();
+
   return (
     <>
-      <CustomerNav />
+      <CustomerNav user={user} />
       {children}
     </>
   );

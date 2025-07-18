@@ -3,7 +3,7 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import prisma from "../prisma";
-import { lucia } from "../auth";
+import { lucia, validateRequest } from "../auth";
 import bcrypt from "bcrypt";
 import { customerLoginSchema, customerRegisterSchema, FormState } from "@/types/customer.auth.types";
 
@@ -90,4 +90,17 @@ export async function customerRegister(_: FormState, formData: FormData) {
   const sessionCookie = lucia.createSessionCookie(session.id);
   (await cookies()).set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
   return redirect("/");
+}
+
+export async function customerLogout() {
+  const { session } = await validateRequest();
+  if (!session) {
+    return redirect("/login");
+  }
+
+  await lucia.invalidateSession(session.id);
+
+  const sessionCookie = lucia.createBlankSessionCookie();
+  (await cookies()).set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
+  return redirect("/login");
 }
