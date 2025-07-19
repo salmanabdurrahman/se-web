@@ -1,4 +1,12 @@
-export default function CustomerProductFilters() {
+import { Brand, Category, Location } from "@prisma/client";
+
+interface CustomerProductFiltersProps {
+  categories: Category[];
+  brands: Brand[];
+  locations: Location[];
+}
+
+export default function CustomerProductFilters({ categories, brands, locations }: CustomerProductFiltersProps) {
   return (
     <form
       action=""
@@ -35,46 +43,78 @@ export default function CustomerProductFilters() {
       <hr className="border-[#E5E5E5]" />
       <div className="stocks flex flex-col gap-[14px]">
         <p className="leading-[22px] font-semibold">Stocks</p>
-        <label className="flex items-center gap-3 font-semibold">
+        <label className="flex items-center gap-3 font-semibold" htmlFor="stock-pre-order">
           <input
             type="checkbox"
+            id="stock-pre-order"
             name="stock"
+            value="pre_order"
             className="flex h-6 w-6 shrink-0 appearance-none rounded-md ring-1 ring-[#0D5CD7] checked:border-[3px] checked:border-solid checked:border-white checked:bg-[#0D5CD7]"
           />
           <span>Pre Order</span>
         </label>
-        <label className="flex items-center gap-3 font-semibold">
+        <label className="flex items-center gap-3 font-semibold" htmlFor="stock-ready">
           <input
             type="checkbox"
+            id="stock-ready"
             name="stock"
+            value="ready"
             className="flex h-6 w-6 shrink-0 appearance-none rounded-md ring-1 ring-[#0D5CD7] checked:border-[3px] checked:border-solid checked:border-white checked:bg-[#0D5CD7]"
           />
           <span>Ready Stock</span>
         </label>
       </div>
       <hr className="border-[#E5E5E5]" />
+      <div className="categories flex flex-col gap-[14px]">
+        <p className="leading-[22px] font-semibold">Categories</p>
+        {categories.map(category => (
+          <label
+            className="flex items-center gap-3 font-semibold"
+            key={category.id}
+            htmlFor={`category-${category.id}`}
+          >
+            <input
+              type="checkbox"
+              id={`category-${category.id}`}
+              name="category"
+              value={category.id}
+              className="flex h-6 w-6 shrink-0 appearance-none rounded-md ring-1 ring-[#0D5CD7] checked:border-[3px] checked:border-solid checked:border-white checked:bg-[#0D5CD7]"
+            />
+            <span>{category.name}</span>
+          </label>
+        ))}
+      </div>
+      <hr className="border-[#E5E5E5]" />
       <div className="brands flex flex-col gap-[14px]">
         <p className="leading-[22px] font-semibold">Brands</p>
-        <label className="flex items-center gap-3 font-semibold">
-          <input
-            type="checkbox"
-            name="brand"
-            className="flex h-6 w-6 shrink-0 appearance-none rounded-md ring-1 ring-[#0D5CD7] checked:border-[3px] checked:border-solid checked:border-white checked:bg-[#0D5CD7]"
-          />
-          <span>Apple</span>
-        </label>
+        {brands.map(brand => (
+          <label className="flex items-center gap-3 font-semibold" key={brand.id} htmlFor={`brand-${brand.id}`}>
+            <input
+              type="checkbox"
+              id={`brand-${brand.id}`}
+              name="brand"
+              value={brand.id}
+              className="flex h-6 w-6 shrink-0 appearance-none rounded-md ring-1 ring-[#0D5CD7] checked:border-[3px] checked:border-solid checked:border-white checked:bg-[#0D5CD7]"
+            />
+            <span>{brand.name}</span>
+          </label>
+        ))}
       </div>
       <hr className="border-[#E5E5E5]" />
       <div className="locations flex flex-col gap-[14px]">
         <p className="leading-[22px] font-semibold">Locations</p>
-        <label className="flex items-center gap-3 font-semibold">
-          <input
-            type="checkbox"
-            name="loc"
-            className="flex h-6 w-6 shrink-0 appearance-none rounded-md ring-1 ring-[#0D5CD7] checked:border-[3px] checked:border-solid checked:border-white checked:bg-[#0D5CD7]"
-          />
-          <span>Bandung</span>
-        </label>
+        {locations.map(location => (
+          <label className="flex items-center gap-3 font-semibold" key={location.id} htmlFor={`loc-${location.id}`}>
+            <input
+              type="checkbox"
+              id={`loc-${location.id}`}
+              name="loc"
+              value={location.id}
+              className="flex h-6 w-6 shrink-0 appearance-none rounded-md ring-1 ring-[#0D5CD7] checked:border-[3px] checked:border-solid checked:border-white checked:bg-[#0D5CD7]"
+            />
+            <span>{location.name}</span>
+          </label>
+        ))}
       </div>
     </form>
   );
