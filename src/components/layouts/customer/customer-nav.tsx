@@ -37,7 +37,9 @@ export default function CustomerNav({ user }: CustomerNavProps) {
     <header className="bg-[#EFF3FA] pt-[30px] pb-[50px]">
       <nav className="container mx-auto flex max-w-[1130px] items-center justify-between rounded-3xl bg-[#0D5CD7] p-5">
         <div className="flex shrink-0">
-          <Image src="/assets/images/logos/logo.svg" alt="icon" width={157} height={42} />
+          <Link href="/">
+            <Image src="/assets/images/logos/logo.svg" alt="icon" width={157} height={42} />
+          </Link>
         </div>
         <ul className="flex items-center gap-[30px]">
           <li
