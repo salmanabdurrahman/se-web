@@ -21,7 +21,7 @@ export function FilterStoreProvider({ children }: FilterStoreProviderProps) {
   return <FilterStoreContext.Provider value={storeRef.current}>{children}</FilterStoreContext.Provider>;
 }
 
-export default function useFilterStore<T>(selector: (store: FilterStore) => T): T {
+export function useFilterStore<T>(selector: (store: FilterStore) => T): T {
   const filterStoreContext = useContext(FilterStoreContext);
   if (!filterStoreContext) {
     throw new Error("useFilterStore must be used within a FilterStoreProvider");
