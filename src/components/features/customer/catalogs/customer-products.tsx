@@ -38,7 +38,7 @@ export default function CustomerProducts({ initialProducts }: CustomerProductsPr
       <div className="grid grid-cols-3 gap-[30px]">
         {products.length > 0 ? (
           products.map(product => (
-            <Link href="" className="product-card" key={product.id}>
+            <Link href={`/detail-product/${product.id}`} className="product-card" key={product.id}>
               <div className="flex w-full flex-col gap-[24px] rounded-[20px] bg-white p-5 ring-1 ring-[#E5E5E5] transition-all duration-300 hover:ring-2 hover:ring-[#FFC736]">
                 <div className="flex h-[90px] w-full shrink-0 items-center justify-center overflow-hidden">
                   <Image
