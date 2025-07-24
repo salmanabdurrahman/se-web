@@ -1,23 +1,23 @@
 import Link from "next/link";
+import { formatCurrency } from "@/lib/utils";
+import { CustomerProduct } from "@/types/customer.product.types";
 
-export default function CustomerDetailsInfoSection() {
+interface CustomerDetailsInfoSectionProps {
+  product: CustomerProduct;
+}
+
+export default function CustomerDetailsInfoSection({ product }: CustomerDetailsInfoSectionProps) {
   return (
     <section id="details-info" className="container mx-auto mt-[50px] flex max-w-[1030px] justify-between gap-5">
       <div className="flex w-full max-w-[650px] flex-col gap-[30px]">
         <div id="about" className="flex flex-col gap-[10px]">
           <h3 className="font-semibold">About Product</h3>
-          <p className="leading-[32px]">
-            iMac brings incredible, room-filling audio to any space. Two pairs of force-cancelling woofers create rich,
-            deep bass — and each is balanced with a high-performance tweeter for a massive soundstage that takes music,
-            movies, and more to the next level. 12-Core CPU 18-Core GPU 18GB Unified Memory 1TB SSD Storage¹ iMac also
-            supports Spatial Audio with Dolby Atmos. And when you combine that with a 4.5K Retina display, it's like
-            bringing the whole theater home.
-          </p>
+          <p className="leading-[32px]">{product.description}</p>
         </div>
         <div id="testi" className="flex flex-col gap-[10px]">
           <h3 className="font-semibold">Real Testimonials</h3>
           <div className="grid grid-cols-2 gap-5">
-            {[1, 2, 3, 4].map((item, index) => (
+            {[1, 2, 3, 4].map((_, index) => (
               <div
                 className="testi-card flex h-fit flex-col gap-5 rounded-[20px] border border-[#E5E5E5] bg-white p-5"
                 key={index}
@@ -65,7 +65,7 @@ export default function CustomerDetailsInfoSection() {
         <div className="flex w-full flex-col gap-[30px] rounded-3xl border border-[#E5E5E5] bg-white p-[30px]">
           <div className="flex flex-col gap-1">
             <p className="font-semibold">Brand New</p>
-            <p className="text-[32px] leading-[48px] font-bold">Rp 56.500.000</p>
+            <p className="text-[32px] leading-[48px] font-bold">{formatCurrency(product.price)}</p>
           </div>
           <div className="flex flex-col gap-4">
             <div className="flex items-center gap-2">

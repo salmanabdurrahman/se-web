@@ -9,3 +9,18 @@ export type CustomerProductWithRelations = Prisma.ProductGetPayload<{
     };
   };
 }>;
+
+export type CustomerProduct = Prisma.ProductGetPayload<{
+  select: {
+    id: true;
+    name: true;
+    description: true;
+    price: true;
+    images: true;
+    _count: {
+      select: {
+        orders: true;
+      };
+    };
+  };
+}>;

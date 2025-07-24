@@ -3,9 +3,9 @@
 import prisma from "../prisma";
 import { Prisma } from "@prisma/client";
 import { FilterState } from "@/stores/filter-store";
-import { CustomerProductWithRelations } from "@/types/customer.product.types";
+import { CustomerProduct, CustomerProductWithRelations } from "@/types/customer.product.types";
 
-export async function getPopularProducts(): Promise<CustomerProductWithRelations[]> {
+export async function getPopularProducts(take: number = 10): Promise<CustomerProductWithRelations[]> {
   try {
     const products = await prisma.product.findMany({
       orderBy: {
@@ -20,7 +20,7 @@ export async function getPopularProducts(): Promise<CustomerProductWithRelations
           },
         },
       },
-      take: 10,
+      take,
     });
     return products;
   } catch (error) {
@@ -29,7 +29,7 @@ export async function getPopularProducts(): Promise<CustomerProductWithRelations
   }
 }
 
-export async function getLatestProducts(): Promise<CustomerProductWithRelations[]> {
+export async function getLatestProducts(take: number = 10): Promise<CustomerProductWithRelations[]> {
   try {
     const products = await prisma.product.findMany({
       orderBy: {
@@ -42,7 +42,7 @@ export async function getLatestProducts(): Promise<CustomerProductWithRelations[
           },
         },
       },
-      take: 10,
+      take,
     });
     return products;
   } catch (error) {
@@ -155,5 +155,31 @@ export async function getFilteredProducts(
   } catch (error) {
     console.error("Error fetching filtered products:", error);
     return [];
+  }
+}
+
+export async function getProductById(id: string): Promise<CustomerProduct | null> {
+  try {
+    const product = await prisma.product.findUnique({
+      where: {
+        id,
+      },
+      select: {
+        id: true,
+        name: true,
+        description: true,
+        price: true,
+        images: true,
+        _count: {
+          select: {
+            orders: true,
+          },
+        },
+      },
+    });
+    return product;
+  } catch (error) {
+    console.error("Error fetching product by ID:", error);
+    return null;
   }
 }
