@@ -17,6 +17,11 @@ export type CustomerProduct = Prisma.ProductGetPayload<{
     description: true;
     price: true;
     images: true;
+    category: {
+      select: {
+        name: true;
+      };
+    };
     _count: {
       select: {
         orders: true;

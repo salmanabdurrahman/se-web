@@ -170,6 +170,11 @@ export async function getProductById(id: string): Promise<CustomerProduct | null
         description: true,
         price: true,
         images: true,
+        category: {
+          select: {
+            name: true,
+          },
+        },
         _count: {
           select: {
             orders: true,

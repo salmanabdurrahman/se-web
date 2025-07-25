@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import { validateRequest } from "@/lib/auth";
 import { getPopularProducts, getProductById } from "@/lib/actions/customer.product.actions";
 import CustomerTitleSection from "@/components/features/customer/detail-product/customer-title-section";
 import CustomerDetailsImagesSection from "@/components/features/customer/detail-product/customer-details-images-section";
@@ -12,6 +13,7 @@ interface CustomerDetailProductPageProps {
 
 export default async function CustomerDetailProductPage({ params }: CustomerDetailProductPageProps) {
   const { id } = await params;
+  const { session } = await validateRequest();
   const [product, popularProducts] = await Promise.all([getProductById(id), getPopularProducts(5)]);
 
   if (!product) {
@@ -23,7 +25,7 @@ export default async function CustomerDetailProductPage({ params }: CustomerDeta
       <CustomerTitleSection product={product} />
       <CustomerDetailsImagesSection product={product} />
       <CustomerDetailsBenefitsSection />
-      <CustomerDetailsInfoSection product={product} />
+      <CustomerDetailsInfoSection product={product} isLoggedIn={!!session} />
       <CustomerRecommendationsSection products={popularProducts} />
     </>
   );

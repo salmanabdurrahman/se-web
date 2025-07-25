@@ -1,12 +1,42 @@
-import Link from "next/link";
+"use client";
+
+import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 import { formatCurrency } from "@/lib/utils";
+import { useCartStore } from "@/providers/cart-store-provider";
 import { CustomerProduct } from "@/types/customer.product.types";
 
 interface CustomerDetailsInfoSectionProps {
   product: CustomerProduct;
+  isLoggedIn: boolean;
 }
 
-export default function CustomerDetailsInfoSection({ product }: CustomerDetailsInfoSectionProps) {
+export default function CustomerDetailsInfoSection({ product, isLoggedIn }: CustomerDetailsInfoSectionProps) {
+  const addItem = useCartStore(state => state.addItem);
+  const router = useRouter();
+
+  function handleAddToCart() {
+    if (!isLoggedIn) {
+      toast.error("Please log in to add items to the cart.");
+      router.push("/login");
+      return;
+    }
+
+    const newItem = {
+      product: {
+        id: product.id,
+        name: product.name,
+        price: Number(product.price),
+        images: product.images,
+        category: product.category.name,
+      },
+      quantity: 1,
+    };
+
+    addItem(newItem);
+    toast.success("Item added to cart successfully!");
+  }
+
   return (
     <section id="details-info" className="container mx-auto mt-[50px] flex max-w-[1030px] justify-between gap-5">
       <div className="flex w-full max-w-[650px] flex-col gap-[30px]">
@@ -100,9 +130,14 @@ export default function CustomerDetailsInfoSection({ product }: CustomerDetailsI
             </div>
           </div>
           <div className="flex flex-col gap-3">
-            <Link href="" className="rounded-full bg-[#0D5CD7] p-[12px_24px] text-center font-semibold text-white">
+            <button
+              type="button"
+              className="rounded-full bg-[#0D5CD7] p-[12px_24px] text-center font-semibold text-white disabled:cursor-not-allowed disabled:opacity-50"
+              disabled={!isLoggedIn}
+              onClick={handleAddToCart}
+            >
               Add to Cart
-            </Link>
+            </button>
             <a
               href=""
               className="rounded-full border border-[#E5E5E5] bg-white p-[12px_24px] text-center font-semibold"
