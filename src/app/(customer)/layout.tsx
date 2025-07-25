@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
+import { CartStoreProvider } from "@/providers/cart-store-provider";
 import Alert from "@/components/common/alert";
 import "../globals-landing.css";
 
@@ -21,8 +22,10 @@ export default function CustomerLayout({
 }>) {
   return (
     <main className={`${poppins.className}`} suppressHydrationWarning>
-      <Alert />
-      {children}
+      <CartStoreProvider>
+        <Alert />
+        {children}
+      </CartStoreProvider>
     </main>
   );
 }

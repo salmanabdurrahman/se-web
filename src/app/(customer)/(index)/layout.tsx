@@ -1,5 +1,4 @@
 import { FilterStoreProvider } from "@/providers/filter-store-provider";
-import { CartStoreProvider } from "@/providers/cart-store-provider";
 import CustomerLayoutShell from "@/components/layouts/customer/customer-layout-shell";
 
 interface CustomerLayoutProps {
@@ -9,9 +8,7 @@ interface CustomerLayoutProps {
 export default function CustomerLayout({ children }: CustomerLayoutProps) {
   return (
     <CustomerLayoutShell>
-      <FilterStoreProvider>
-        <CartStoreProvider>{children}</CartStoreProvider>
-      </FilterStoreProvider>
+      <FilterStoreProvider>{children}</FilterStoreProvider>
     </CustomerLayoutShell>
   );
 }

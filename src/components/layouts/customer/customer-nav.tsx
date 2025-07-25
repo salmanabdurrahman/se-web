@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { useTransition } from "react";
 import { User } from "lucia";
 import { customerLogout } from "@/lib/actions/customer.auth.actions";
+import { useCartStore } from "@/providers/cart-store-provider";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -21,6 +22,8 @@ interface CustomerNavProps {
 
 export default function CustomerNav({ user }: CustomerNavProps) {
   const [isPending, startTransition] = useTransition();
+  const items = useCartStore(store => store.items);
+  const totalItems = items.reduce((total, item) => total + item.quantity, 0);
   const pathname = usePathname();
 
   function isActive(path: string) {
@@ -64,10 +67,13 @@ export default function CustomerNav({ user }: CustomerNavProps) {
           </li>
         </ul>
         <div className="flex items-center gap-3">
-          <Link href="/cart">
+          <Link href="/cart" className="relative">
             <div className="flex h-12 w-12 shrink-0">
               <Image src="/assets/icons/cart.svg" alt="icon" width={48} height={48} />
             </div>
+            <span className="absolute -top-[5px] -right-[5px] flex h-6 w-6 items-center justify-center rounded-full bg-yellow-500 text-xs font-bold text-black">
+              {totalItems}
+            </span>
           </Link>
           {user && user.role === "customer" ? (
             <DropdownMenu>
