@@ -1,10 +1,16 @@
 "use client";
 
+import toast from "react-hot-toast";
 import { useCartStore } from "@/providers/cart-store-provider";
 import { formatCurrency } from "@/lib/utils";
 
 export default function CustomerCartSection() {
-  const { items } = useCartStore(state => state);
+  const { items, updateItemQuantity, removeItem } = useCartStore(state => state);
+
+  function handleRemoveItem(productId: string) {
+    removeItem(productId);
+    toast.success("Item removed from cart");
+  }
 
   return (
     <section id="cart" className="container mx-auto mt-[50px] flex max-w-[1130px] flex-col gap-5">
@@ -35,11 +41,17 @@ export default function CustomerCartSection() {
             <div className="flex w-[120px] flex-col gap-1">
               <p className="text-sm text-[#616369]">Quantity</p>
               <div className="flex items-center gap-3">
-                <button className="flex h-6 w-6 shrink-0">
+                <button
+                  className="flex h-6 w-6 shrink-0"
+                  onClick={() => updateItemQuantity(item.product.id, item.quantity - 1)}
+                >
                   <img src="assets/icons/minus-cirlce.svg" alt="minus" loading="lazy" />
                 </button>
                 <p className="leading-[22px] font-semibold text-[#0D5CD7]">{item.quantity}</p>
-                <button className="flex h-6 w-6 shrink-0">
+                <button
+                  className="flex h-6 w-6 shrink-0"
+                  onClick={() => updateItemQuantity(item.product.id, item.quantity + 1)}
+                >
                   <img src="assets/icons/add-circle.svg" alt="plus" loading="lazy" />
                 </button>
               </div>
@@ -50,7 +62,10 @@ export default function CustomerCartSection() {
                 {formatCurrency(item.product.price * item.quantity)}
               </p>
             </div>
-            <button className="rounded-full border border-[#E5E5E5] bg-white p-[12px_24px] text-center font-semibold">
+            <button
+              className="rounded-full border border-[#E5E5E5] bg-white p-[12px_24px] text-center font-semibold"
+              onClick={() => handleRemoveItem(item.product.id)}
+            >
               Remove
             </button>
           </div>

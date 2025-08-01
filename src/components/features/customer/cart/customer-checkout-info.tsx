@@ -1,4 +1,12 @@
+"use client";
+
+import { useCartStore } from "@/providers/cart-store-provider";
+import { formatCurrency } from "@/lib/utils";
+
 export default function CustomerCheckoutInfo() {
+  const items = useCartStore(state => state.items);
+  const grandTotal = items.reduce((total, item) => total + item.product.price * item.quantity, 0);
+
   return (
     <form
       method="POST"
@@ -118,7 +126,7 @@ export default function CustomerCheckoutInfo() {
                 </div>
                 <p>Sub Total</p>
               </div>
-              <p className="font-semibold">Rp 50.000.000</p>
+              <p className="font-semibold">{formatCurrency(grandTotal)}</p>
             </div>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
@@ -127,7 +135,7 @@ export default function CustomerCheckoutInfo() {
                 </div>
                 <p>Insurance 12%</p>
               </div>
-              <p className="font-semibold">Rp 18.389.492</p>
+              <p className="font-semibold">{formatCurrency(0)}</p>
             </div>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
@@ -136,7 +144,7 @@ export default function CustomerCheckoutInfo() {
                 </div>
                 <p>Shipping (Flat)</p>
               </div>
-              <p className="font-semibold">Rp 200.000</p>
+              <p className="font-semibold">{formatCurrency(0)}</p>
             </div>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
@@ -145,7 +153,7 @@ export default function CustomerCheckoutInfo() {
                 </div>
                 <p>Warranty Original</p>
               </div>
-              <p className="font-semibold">Rp 0</p>
+              <p className="font-semibold">{formatCurrency(0)}</p>
             </div>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
@@ -154,12 +162,14 @@ export default function CustomerCheckoutInfo() {
                 </div>
                 <p>PPN 11%</p>
               </div>
-              <p className="font-semibold">Rp 123.489.333</p>
+              <p className="font-semibold">{formatCurrency(0)}</p>
             </div>
           </div>
           <div className="flex flex-col gap-1">
             <p className="font-semibold">Grand Total</p>
-            <p className="text-[32px] leading-[48px] font-bold text-[#0D5CD7] underline">Rp 18.498.492.444</p>
+            <p className="text-[32px] leading-[48px] font-bold text-[#0D5CD7] underline">
+              {formatCurrency(grandTotal)}
+            </p>
           </div>
           <div className="flex flex-col gap-3">
             <a href="" className="rounded-full bg-[#0D5CD7] p-[12px_24px] text-center font-semibold text-white">
