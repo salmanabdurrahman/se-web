@@ -2,11 +2,15 @@
 
 import prisma from "../prisma";
 import { validateRequest } from "../auth";
+import xenditClient from "../xendit";
+import { convertUSDToIDR, generateRandomString } from "../utils";
 import { CartItem } from "@/stores/cart-store";
+import { xenditRedirectUrl } from "@/constants/app-config";
+import { PaymentRequestParameters, PaymentRequest } from "xendit-node/payment_request/models";
 import { customerOrderSchema, FormState } from "@/types/customer.order.types";
 
 export async function createOrder(items: CartItem[], previousState: FormState, formData: FormData): Promise<FormState> {
-  const { session } = await validateRequest();
+  const { session, user } = await validateRequest();
   if (!session) {
     return {
       message: "You must be logged in to place an order.",
@@ -63,16 +67,74 @@ export async function createOrder(items: CartItem[], previousState: FormState, f
 
     const { name, address, city, postalCode, note, phone } = validatedFields.data;
 
-    console.log("Creating order with the following details:", {
-      userId: session.id,
-      items,
-      totalPrice,
-      ...validatedFields.data,
+    const order = await prisma.order.create({
+      data: {
+        code: `ORD-${generateRandomString(16)}`,
+        totalPrice,
+        status: "pending",
+        detail: {
+          create: {
+            name,
+            phone,
+            address,
+            city,
+            postalCode,
+            note,
+          },
+        },
+        products: {
+          createMany: {
+            data: items.map(item => {
+              const product = productsFromDb.find(product => product.id === item.product.id);
+              if (!product) {
+                throw new Error("Product not found in database");
+              }
+
+              return {
+                subtotal: product.price * BigInt(item.quantity),
+                quantity: item.quantity,
+                productId: product.id,
+              };
+            }),
+          },
+        },
+        userId: user.id,
+      },
     });
 
+    // create a payment request using Xendit
+    const paymentRequestParams: PaymentRequestParameters = {
+      amount: await convertUSDToIDR(totalPrice),
+      paymentMethod: {
+        ewallet: {
+          channelProperties: {
+            successReturnUrl: xenditRedirectUrl,
+          },
+          channelCode: "SHOPEEPAY",
+        },
+        reusability: "ONE_TIME_USE",
+        type: "EWALLET",
+      },
+      currency: "IDR",
+      referenceId: order.code,
+    };
+
+    const paymentResponse: PaymentRequest = await xenditClient.PaymentRequest.createPaymentRequest({
+      data: paymentRequestParams,
+    });
+
+    const redirectUrl = paymentResponse.actions?.find(action => action?.action === "AUTH")?.url;
+    if (!redirectUrl) {
+      return {
+        message: "Failed to create payment request. Please try again later.",
+        success: false,
+      };
+    }
+
     return {
-      message: "Order placed successfully!",
+      message: "Order placed successfully! Please complete your payment.",
       success: true,
+      redirectUrl,
     };
   } catch (error) {
     console.error("Error creating order:", error);

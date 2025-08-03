@@ -37,5 +37,6 @@ export type FormState =
       };
       message?: string;
       success?: boolean;
+      redirectUrl?: string;
     }
   | undefined;

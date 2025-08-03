@@ -21,9 +21,9 @@ export default function CustomerCheckoutInfo() {
       toast.error(state.message);
     }
 
-    if (state?.success) {
-      toast.success("Order placed successfully!");
-      router.push("/");
+    if (state?.success && state?.redirectUrl) {
+      toast.success(state?.message || "Order placed successfully!");
+      router.push(state.redirectUrl);
       clearCart();
     }
   }, [state, clearCart, router]);
