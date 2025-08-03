@@ -1,15 +1,37 @@
 "use client";
 
+import { useRouter } from "next/navigation";
+import { useActionState, useEffect } from "react";
+import toast from "react-hot-toast";
 import { useCartStore } from "@/providers/cart-store-provider";
 import { formatCurrency } from "@/lib/utils";
+import { createOrder } from "@/lib/actions/customer.order.actions";
 
 export default function CustomerCheckoutInfo() {
-  const items = useCartStore(state => state.items);
+  const { items, clearCart } = useCartStore(state => state);
   const grandTotal = items.reduce((total, item) => total + item.product.price * item.quantity, 0);
+  const router = useRouter();
+
+  // bind the createOrder function with the current items in the cart
+  const createOrderWithItems = createOrder.bind(null, items);
+  const [state, action, pending] = useActionState(createOrderWithItems, undefined);
+
+  useEffect(() => {
+    if (state?.message && !state.success) {
+      toast.error(state.message);
+    }
+
+    if (state?.success) {
+      toast.success("Order placed successfully!");
+      router.push("/");
+      clearCart();
+    }
+  }, [state, clearCart, router]);
 
   return (
     <form
       method="POST"
+      action={action}
       id="checkout-info"
       className="container mx-auto mt-[50px] flex max-w-[1130px] justify-between gap-5 pb-[100px]"
     >
@@ -30,6 +52,7 @@ export default function CustomerCheckoutInfo() {
               autoFocus
             />
           </div>
+          {state?.errors?.name && <p className="text-sm text-red-400">{state.errors.name[0]}</p>}
           <div className="flex items-center gap-[10px] rounded-full border border-[#E5E5E5] p-[12px_20px] transition-all duration-300 focus-within:ring-2 focus-within:ring-[#FFC736]">
             <div className="flex shrink-0">
               <img src="/assets/icons/house-2.svg" alt="icon" loading="lazy" />
@@ -43,47 +66,49 @@ export default function CustomerCheckoutInfo() {
               required
             />
           </div>
-          <div className="flex items-center gap-[30px]">
-            <div className="flex items-center gap-[10px] rounded-full border border-[#E5E5E5] p-[12px_20px] transition-all duration-300 focus-within:ring-2 focus-within:ring-[#FFC736]">
-              <div className="flex shrink-0">
-                <img src="/assets/icons/global.svg" alt="icon" loading="lazy" />
-              </div>
-              <input
-                type="text"
-                id="city"
-                name="city"
-                className="w-full appearance-none font-semibold text-black outline-none placeholder:font-normal placeholder:text-[#616369]"
-                placeholder="City"
-                required
-              />
+          {state?.errors?.address && <p className="text-sm text-red-400">{state.errors.address[0]}</p>}
+          <div className="flex items-center gap-[10px] rounded-full border border-[#E5E5E5] p-[12px_20px] transition-all duration-300 focus-within:ring-2 focus-within:ring-[#FFC736]">
+            <div className="flex shrink-0">
+              <img src="/assets/icons/global.svg" alt="icon" loading="lazy" />
             </div>
-            <div className="flex items-center gap-[10px] rounded-full border border-[#E5E5E5] p-[12px_20px] transition-all duration-300 focus-within:ring-2 focus-within:ring-[#FFC736]">
-              <div className="flex shrink-0">
-                <img src="/assets/icons/location.svg" alt="icon" loading="lazy" />
-              </div>
-              <input
-                type="number"
-                id="post-code"
-                name="post-code"
-                className="w-full appearance-none font-semibold text-black outline-none placeholder:font-normal placeholder:text-[#616369]"
-                placeholder="Post code"
-                required
-              />
-            </div>
+            <input
+              type="text"
+              id="city"
+              name="city"
+              className="w-full appearance-none font-semibold text-black outline-none placeholder:font-normal placeholder:text-[#616369]"
+              placeholder="City"
+              required
+            />
           </div>
+          {state?.errors?.city && <p className="text-sm text-red-400">{state.errors.city[0]}</p>}
+          <div className="flex items-center gap-[10px] rounded-full border border-[#E5E5E5] p-[12px_20px] transition-all duration-300 focus-within:ring-2 focus-within:ring-[#FFC736]">
+            <div className="flex shrink-0">
+              <img src="/assets/icons/location.svg" alt="icon" loading="lazy" />
+            </div>
+            <input
+              type="number"
+              id="postalCode"
+              name="postalCode"
+              className="w-full appearance-none font-semibold text-black outline-none placeholder:font-normal placeholder:text-[#616369]"
+              placeholder="Post code"
+              required
+            />
+          </div>
+          {state?.errors?.postalCode && <p className="text-sm text-red-400">{state.errors.postalCode[0]}</p>}
           <div className="flex items-start gap-[10px] rounded-[20px] border border-[#E5E5E5] p-[12px_20px] transition-all duration-300 focus-within:ring-2 focus-within:ring-[#FFC736]">
             <div className="flex shrink-0">
               <img src="/assets/icons/note.svg" alt="icon" loading="lazy" />
             </div>
             <textarea
-              name="notes"
-              id="notes"
+              name="note"
+              id="note"
               className="w-full resize-none appearance-none font-semibold text-black outline-none placeholder:font-normal placeholder:text-[#616369]"
               rows={6}
               placeholder="Additional notes for courier"
               defaultValue={""}
             />
           </div>
+          {state?.errors?.note && <p className="text-sm text-red-400">{state.errors.note[0]}</p>}
           <div className="flex items-center gap-[10px] rounded-full border border-[#E5E5E5] p-[12px_20px] transition-all duration-300 focus-within:ring-2 focus-within:ring-[#FFC736]">
             <div className="flex shrink-0">
               <img src="/assets/icons/call.svg" alt="icon" loading="lazy" />
@@ -97,6 +122,7 @@ export default function CustomerCheckoutInfo() {
               required
             />
           </div>
+          {state?.errors?.phone && <p className="text-sm text-red-400">{state.errors.phone[0]}</p>}
         </div>
       </div>
       <div className="flex h-fit flex-1 shrink-0 flex-col gap-4">
@@ -172,9 +198,13 @@ export default function CustomerCheckoutInfo() {
             </p>
           </div>
           <div className="flex flex-col gap-3">
-            <a href="" className="rounded-full bg-[#0D5CD7] p-[12px_24px] text-center font-semibold text-white">
-              Checkout Now
-            </a>
+            <button
+              type="submit"
+              className="rounded-full bg-[#0D5CD7] p-[12px_24px] text-center font-semibold text-white disabled:cursor-not-allowed disabled:opacity-50"
+              disabled={pending || items.length === 0}
+            >
+              {pending ? "Processing your order..." : "Checkout Now"}
+            </button>
             <a
               href=""
               className="rounded-full border border-[#E5E5E5] bg-white p-[12px_24px] text-center font-semibold"
