@@ -1,36 +1,93 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Simple E-commerce
 
-## Getting Started
+Proyek aplikasi web e-commerce full-stack yang dibangun menggunakan tumpukan teknologi modern. Aplikasi ini mengimplementasikan alur esensial, mulai dari antarmuka pelanggan hingga dasbor manajemen untuk admin.
 
-First, run the development server:
+## ✨ Fitur Utama
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+### 🛍️ Sisi Pelanggan
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- Halaman utama dinamis yang menampilkan produk unggulan.
+- Katalog produk dengan pencarian _real-time_ dan filter multi-parameter.
+- Halaman detail untuk setiap produk.
+- Manajemen keranjang belanja dengan persistensi sesi.
+- Sistem otentikasi (registrasi & login) untuk pelanggan.
+- Alur checkout yang terintegrasi dengan payment gateway Xendit.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 🔐 Sisi Admin
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- Dasbor admin dengan rute yang terproteksi berbasis peran (role-based).
+- Fungsionalitas CRUD (Create, Read, Update, Delete) untuk entitas utama: Produk, Kategori, Brand, dan Lokasi.
+- Manajemen gambar yang terintegrasi dengan Supabase Storage.
+- Tampilan data untuk Pesanan (Orders) dan Pelanggan (Customers).
+- Tabel data interaktif dengan fitur pagination dan kustomisasi kolom.
 
-## Learn More
+## 🚀 Teknologi Yang Digunakan
 
-To learn more about Next.js, take a look at the following resources:
+- **Framework:** [Next.js](https://nextjs.org/) (App Router)
+- **Styling:** [Tailwind CSS](https://tailwindcss.com/)
+- **Komponen UI:** [shadcn/ui](https://ui.shadcn.com/)
+- **Database ORM:** [Prisma](https://www.prisma.io/)
+- **Database & Storage:** [Supabase](https://supabase.com/) (PostgreSQL & File Storage)
+- **Otentikasi:** [Lucia Auth](https://lucia-auth.com/)
+- **State Management:** [Zustand](https://zustand-demo.pmnd.rs/)
+- **Payment Gateway:** [Xendit](https://www.xendit.co/id/)
+- **Validasi:** [Zod](https://zod.dev/)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🛠️ Cara Menjalankan Proyek Secara Lokal
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Untuk menjalankan proyek ini di komputermu, ikuti langkah-langkah berikut:
 
-## Deploy on Vercel
+1.  **Clone Repositori**
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+    ```bash
+    git clone [https://github.com/username/nama-repo.git](https://github.com/username/nama-repo.git)
+    cd nama-repo
+    ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+2.  **Setup Environment Variables**
+    Salin file `.env.example` menjadi `.env.local` dan isi semua variabel yang dibutuhkan.
+
+    ```bash
+    cp .env.example .env.local
+    ```
+
+3.  **Install Dependencies**
+    Proyek ini menggunakan `bun` sebagai package manager.
+
+    ```bash
+    bun install
+    ```
+
+    Atau jika kamu menggunakan `npm`:
+
+    ```bash
+    npm install
+    ```
+
+4.  **Jalankan Migrasi Database**
+    Perintah ini akan menyinkronkan skema Prisma dengan database Supabase-mu.
+
+    ```bash
+    npx prisma migrate dev
+    ```
+
+5.  **(Opsional) Isi Database dengan Data Awal (Seed)**
+    Untuk mengisi database dengan data dummy, jalankan:
+
+    ```bash
+    npx prisma db seed
+    ```
+
+6.  **Jalankan Development Server**
+
+    ```bash
+    bun run dev
+    ```
+
+    Atau jika kamu menggunakan `npm`:
+
+    ```bash
+    npm run dev
+    ```
+
+    Buka [http://localhost:3000](http://localhost:3000) di browser-mu.
